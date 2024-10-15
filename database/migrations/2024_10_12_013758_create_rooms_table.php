@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('rooms', function (Blueprint $table) {
             $table->id();
+            $table->string('room_number');
             $table->string('room_type');
-            $table->string('room_number', 50);
             $table->decimal('price', 8, 2);
-            $table->string('pax');
-            $table->enum('stay_type', ['day tour', 'overnight']);
+            $table->integer('pax');
+            $table->string('stay_type');
             $table->timestamps();
         });
     }

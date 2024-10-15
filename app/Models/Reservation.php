@@ -11,16 +11,21 @@ class Reservation extends Model
     use HasFactory;
 
     protected $fillable = [
-        'room_id',
+        'name',
+        'address',
+        'pax',
+        'contact',
+        'car_unit_plate_number',
         'check_in',
         'check_out',
         'status',
-        'contact',
+        'total_amount',
     ];
 
     protected $casts = [
         'check_in' => 'datetime',
         'check_out' => 'datetime',
+        'total_amount' => 'decimal:2',
     ];
 
     public function rooms()

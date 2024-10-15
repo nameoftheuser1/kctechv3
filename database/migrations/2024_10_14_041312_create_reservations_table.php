@@ -13,11 +13,15 @@ return new class extends Migration
     {
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('address');
+            $table->integer('pax');
+            $table->string('contact', 50);
+            $table->text('car_unit_plate_number')->nullable();
             $table->dateTime('check_in');
             $table->dateTime('check_out');
-            $table->string('status', 50);
+            $table->string('status', 50)->default('check in');
             $table->decimal('total_amount', 8, 2);
-            $table->string('contact', 50);
             $table->timestamps();
         });
     }

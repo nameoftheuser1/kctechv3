@@ -15,11 +15,29 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt(['username' => $fields['username'], 'password' => $fields['password']])) {
+            $user = Auth::user();
+
+            if ($user->role == 'user') {
+                return redirect()->route('reservations.index');
+            }
+
             return redirect()->intended('dashboard');
         } else {
             return back()->withErrors([
                 'username' => 'The provided credentials do not match our records.',
             ])->withInput();
         }
+    }
+
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect('/login');
     }
 }

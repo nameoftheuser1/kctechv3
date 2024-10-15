@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('username')->unique();
             $table->string('password');
+            $table->string('role');
             $table->rememberToken();
             $table->timestamps();
         });
@@ -39,6 +40,15 @@ return new class extends Migration
         DB::table('users')->insert([
             'username' => 'admin',
             'password' => Hash::make('admin'),
+            'role' => 'admin',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('users')->insert([
+            'username' => 'user',
+            'password' => Hash::make('user'),
+            'role' => 'user',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
