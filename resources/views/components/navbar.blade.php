@@ -13,10 +13,9 @@
                     </svg>
                 </button>
                 <div id="desktopNav" class="hidden sm:flex sm:gap-5 sm:h-[25px]">
-                    <a href="#" class="hover:border-b-[1px] border-black">Home</a>
-                    <a href="#" class="hover:border-b-[1px] border-black">Room</a>
-                    <a href="#" class="hover:border-b-[1px] border-black">Services</a>
-                    <a href="#" class="hover:border-b-[1px] border-black">Reservation</a>
+                    <a href="{{route('home')}}" class="hover:border-b-[1px] border-black">Home</a>
+                    <a href="{{route('room-list')}}" class="hover:border-b-[1px] border-black">Room</a>
+                    <a href="{{route('gallery')}}" class="hover:border-b-[1px] border-black">Gallery</a>
                 </div>
             </div>
         </div>
@@ -24,10 +23,9 @@
     <div id="mobileNav" class="hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 shadow-md z-40"
         style="padding-top: 100px;">
         <div class="container mx-auto px-4 sm:px-10 py-4">
-            <a href="#" class="block py-2 hover:bg-gray-100">Home</a>
-            <a href="#" class="block py-2 hover:bg-gray-100">Room</a>
-            <a href="#" class="block py-2 hover:bg-gray-100">Services</a>
-            <a href="#" class="block py-2 hover:bg-gray-100">Reservation</a>
+            <a href="{{route('home')}}" class="block py-2 hover:bg-gray-100">Home</a>
+            <a href="{{route('room-list')}}" class="hover:border-b-[1px] border-black">Room</a>
+            <a href="{{route('gallery')}}" class="block py-2 hover:bg-gray-100">Gallery</a>
         </div>
     </div>
 </div>

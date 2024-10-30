@@ -1,25 +1,20 @@
 <x-admin-layout>
-    <div class="container mx-auto p-6">
-        <h1 class="text-3xl font-bold mb-6 text-gray-800">Settings</h1>
+    <div>
+        @if (session('success'))
+            <x-flashMsg msg="{{ session('success') }}" />
+        @elseif (session('deleted'))
+            <x-flashMsg msg="{{ session('deleted') }}" bg="bg-red-500" />
+        @elseif (session('error'))
+            <x-flashMsg msg="{{ session('error') }}" bg="bg-red-500" />
+        @endif
+    </div>
 
-        <!-- Breadcrumbs -->
-        <nav class="mb-4" aria-label="Breadcrumb">
-            <ol class="list-reset flex text-gray-700">
-                <li>
-                    <a href="{{ route('settings') }}" class="hover:text-blue-500">Settings</a>
-                </li>
-            </ol>
-        </nav>
 
-        <div>
-            @if (session('success'))
-                <x-flashMsg msg="{{ session('success') }}" />
-            @elseif (session('deleted'))
-                <x-flashMsg msg="{{ session('deleted') }}" bg="bg-red-500" />
-            @elseif (session('error'))
-                <x-flashMsg msg="{{ session('error') }}" bg="bg-red-500" />
-            @endif
-        </div>
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-12">
+        <caption class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white">
+            Account Security
+            <p class="mt-1 text-sm font-normal text-gray-500">Manage your account security settings.</p>
+        </caption>
 
         <div class="bg-white shadow-md rounded-lg p-6">
             <h2 class="text-xl font-semibold mb-4 text-gray-700">Account Security</h2>

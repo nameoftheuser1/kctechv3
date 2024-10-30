@@ -6,7 +6,7 @@
             <span class="text-[60px] font-semibold">Relax and unwind at Kandahar Resort</span>
             <div class="mb-10">Experience comfort and luxury with hassle-free reservations. Your getaway awaits!
             </div>
-            <a href="#" class="border border-white rounded-full py-3 px-7">Book now</a>
+            {{-- <a href="#" class="border border-white rounded-full py-3 px-7">Book now</a> --}}
         </div>
     </div>
 

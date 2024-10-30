@@ -5,12 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class RoomGallery extends Model
+class Setting extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'name',
-        'image_path',
-    ];
 }

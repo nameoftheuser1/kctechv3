@@ -28,7 +28,7 @@ class Reservation extends Model
         'total_amount' => 'decimal:2',
     ];
 
-    public function rooms()
+    public function rooms(): BelongsToMany
     {
         return $this->belongsToMany(Room::class, 'reservation_room')
             ->withTimestamps();

@@ -55,8 +55,10 @@ class ReservationController extends Controller
 
     public function checkDate()
     {
-        return view('reservations.check-date');
+        $currentDateTime = now()->format('Y-m-d\TH:i');
+        return view('reservations.check-date', compact('currentDateTime'));
     }
+
 
     public function create(Request $request)
     {
@@ -79,6 +81,11 @@ class ReservationController extends Controller
         }
 
         return view('reservations.create', compact('rooms'));
+    }
+
+    public function show(Reservation $reservation)
+    {
+        return view('reservations.show', compact('reservation'));
     }
 
 
@@ -137,6 +144,28 @@ class ReservationController extends Controller
             return redirect()->route('reservations.index')->with('error', 'Failed to create reservation.');
         }
 
-        return redirect()->route('reservations.index')->with('success', 'Reservation created successfully.');
+        // Redirect to the receipt page with the reservation ID
+        return redirect()->route('receipt', ['id' => $reservation->id])->with('success', 'Reservation created successfully.');
+    }
+
+    public function update(Reservation $reservation, Request $request)
+    {
+        // Validate the request data
+        $request->validate([
+            'status' => 'required|string|in:check out',
+        ]);
+
+        // Update the reservation status
+        $reservation->status = $request->input('status');
+        $reservation->save();
+
+        return redirect()->route('reservations.index')->with('success', 'Reservation status updated successfully.');
+    }
+
+    public function showReceipt($id)
+    {
+        $reservation = Reservation::with('rooms')->findOrFail($id);
+
+        return view('reservations.receipt', compact('reservation'));
     }
 }

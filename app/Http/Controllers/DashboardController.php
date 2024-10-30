@@ -2,101 +2,185 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Employee;
 use App\Models\Expense;
 use App\Models\Reservation;
-use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use Phpml\Regression\LeastSquares;
 
 class DashboardController extends Controller
 {
+
     public function index()
     {
-        $currentMonth = Carbon::now()->month;
-        $currentYear = Carbon::now()->year;
+        // Fetch the total_revenue_date and total_expenses_date from the settings table
+        $totalRevenueYear = DB::table('settings')->where('key', 'total_revenue_year')->value('value');
+        $totalExpensesYear = DB::table('settings')->where('key', 'total_expenses_year')->value('value');
+        $totalSalariesYear = DB::table('settings')->where('key', 'total_salaries_year')->value('value');
+        $predictSalesMonth = DB::table('settings')->where('key', 'predict_sales_month')->value('value');
+        $predictReservationsMonth = DB::table('settings')->where('key', 'predict_reservations_month')->value('value');
 
-        // Total reservations for the current month (show 0 if null)
-        $reservations = Reservation::whereMonth('check_in', $currentMonth)
-            ->whereYear('check_in', $currentYear)
-            ->count() ?? 0;
+        $currentYear = date('Y');
 
-        // Total expenses for the current month (show 0 if null)
-        $totalExpenses = Expense::whereMonth('date_time', $currentMonth)
-            ->whereYear('date_time', $currentYear)
-            ->sum('amount') ?? 0;
-
-        // Total revenue for the current month (show 0 if null)
-        $totalRevenue = Reservation::whereMonth('check_in', $currentMonth)
-            ->whereYear('check_in', $currentYear)
+        // Total revenue for the specified year (show 0 if null)
+        $totalRevenue = Reservation::whereYear('created_at', $totalRevenueYear)
             ->sum('total_amount') ?? 0;
 
-        // Calculate profit or loss for the current month
-        $profitLoss = $totalRevenue - $totalExpenses;
+        // Total expenses for the specified year (show 0 if null)
+        $totalExpenses = Expense::whereYear('date_time', $totalExpensesYear)
+            ->sum('amount') ?? 0;
 
-        // Revenue forecasting for the next month based on simple average
-        $forecastedReservations = $this->predictFutureReservations();
-        $forecastedRevenue = $this->forecastRevenue($forecastedReservations);
+        // Total salaries for the specified year (show 0 if null)
+        $totalSalaries = Employee::whereYear('payout_date', $totalSalariesYear)
+            ->sum('salary') ?? 0;
+
+        // Predict sales for the next 6 months
+        $predictedSales = $this->predictSales($predictSalesMonth);
+
+        // Get reservation counts for the past 12 months
+        $reservationCounts = $this->getReservationCountsForPastMonths(12);
+
+        // Predict reservation counts for the next 6 months
+        $predictedReservations = $this->predictReservations($predictReservationsMonth);
+
+        // Calculate the loss vs income
+        $overallLossVsIncome = $totalRevenue - ($totalExpenses + $totalSalaries);
 
         return view('dashboard.index', [
-            'reservations' => $reservations,
-            'totalRevenue' => $totalRevenue, // Add this to pass to the view
-            'totalExpenses' =>  $totalExpenses,
-            'profitLoss' => $profitLoss, // Add profit/loss
-            'forecastedReservations' => $forecastedReservations,
-            'forecastedRevenue' => $forecastedRevenue,
+            'totalRevenueYear' => $totalRevenueYear,
+            'totalExpensesYear' => $totalExpensesYear,
+            'totalSalariesYear' => $totalSalariesYear,
+            'currentYear' => $currentYear,
+            'totalRevenue' => $totalRevenue,
+            'totalExpenses' => $totalExpenses,
+            'totalSalaries' => $totalSalaries,
+            'predictedSales' => $predictedSales,
+            'overallLossVsIncome' => $overallLossVsIncome,
+            'reservationCounts' => $reservationCounts,
+            'predictedReservations' => $predictedReservations,
         ]);
     }
 
-
-
     /**
-     * Predict future reservation counts based on the average of the last 3 months.
+     * Predict sales for the next specified number of months using PHP-ML.
+     *
+     * @param int $monthsToPredict
+     * @return array
      */
-    private function predictFutureReservations()
+    private function predictSales($monthsToPredict)
     {
-        $previousMonths = [Carbon::now()->subMonth(1), Carbon::now()->subMonth(2), Carbon::now()->subMonth(3)];
+        // Fetch historical data for the past 12 months
+        $historicalData = $this->getHistoricalSalesData(12);
 
-        $totalReservations = 0;
-        foreach ($previousMonths as $month) {
-            $reservations = Reservation::whereMonth('check_in', $month->month)
-                ->whereYear('check_in', $month->year)
-                ->count() ?? 0;
-            $totalReservations += $reservations;
+        // Prepare data for PHP-ML
+        $samples = [];
+        $targets = [];
+        foreach ($historicalData as $index => $data) {
+            $samples[] = [$index];
+            $targets[] = $data['revenue'];
         }
 
-        // Simple average of the last 3 months (avoid division by zero)
-        return $totalReservations > 0 ? $totalReservations / count($previousMonths) : 0;
+        // Train the model
+        $regression = new LeastSquares();
+        $regression->train($samples, $targets);
+
+        // Make predictions for the next months
+        $predictions = [];
+        $lastIndex = count($historicalData);
+        for ($i = 1; $i <= $monthsToPredict; $i++) {
+            $predictedRevenue = $regression->predict([$lastIndex + $i]);
+            $predictedMonth = Carbon::now()->addMonths($i);
+            $predictions[] = [
+                'month' => $predictedMonth->format('F Y'),
+                'revenue' => max(0, round($predictedRevenue, 2)), // Ensure non-negative prediction
+            ];
+        }
+
+        return $predictions;
     }
 
     /**
-     * Forecast revenue based on predicted reservation counts and average revenue per reservation.
+     * Predict reservation counts for the next specified number of months.
+     *
+     * @param int $monthsToPredict
+     * @return array
      */
-    private function forecastRevenue($predictedReservations)
+    private function predictReservations($monthsToPredict)
     {
-        // Calculate the average revenue per reservation for the last 3 months
-        $previousMonths = [Carbon::now()->subMonth(1), Carbon::now()->subMonth(2), Carbon::now()->subMonth(3)];
+        // Fetch historical reservation data for the past 12 months
+        $historicalData = $this->getReservationCountsForPastMonths(12);
 
-        $totalRevenue = 0;
-        $totalReservations = 0;
-        foreach ($previousMonths as $month) {
-            $revenue = Reservation::whereMonth('check_in', $month->month)
-                ->whereYear('check_in', $month->year)
+        // Prepare data for PHP-ML
+        $samples = [];
+        $targets = [];
+        foreach ($historicalData as $index => $data) {
+            $samples[] = [$index];
+            $targets[] = $data['count'];
+        }
+
+        // Train the model
+        $regression = new LeastSquares();
+        $regression->train($samples, $targets);
+
+        // Make predictions for the next months
+        $predictions = [];
+        $lastIndex = count($historicalData);
+        for ($i = 1; $i <= $monthsToPredict; $i++) {
+            $predictedCount = $regression->predict([$lastIndex + $i]);
+            $predictedMonth = Carbon::now()->addMonths($i);
+            $predictions[] = [
+                'month' => $predictedMonth->format('F Y'),
+                'count' => max(0, round($predictedCount)), // Ensure non-negative prediction
+            ];
+        }
+
+        return $predictions;
+    }
+
+    /**
+     * Get historical sales data for the specified number of past months.
+     *
+     * @param int $months
+     * @return array
+     */
+    private function getHistoricalSalesData($months)
+    {
+        $data = [];
+        for ($i = $months - 1; $i >= 0; $i--) {
+            $date = Carbon::now()->subMonths($i);
+            $revenue = Reservation::whereMonth('check_in', $date->month)
+                ->whereYear('check_in', $date->year)
                 ->sum('total_amount') ?? 0;
-            $reservations = Reservation::whereMonth('check_in', $month->month)
-                ->whereYear('check_in', $month->year)
-                ->count() ?? 0;
 
-            $totalRevenue += $revenue;
-            $totalReservations += $reservations;
+            $data[] = [
+                'month' => $date->format('F Y'),
+                'revenue' => $revenue,
+            ];
         }
+        return $data;
+    }
 
-        // Avoid division by zero if there are no reservations in the past months
-        if ($totalReservations == 0) {
-            return 0;
+    /**
+     * Get reservation counts for the specified number of past months.
+     *
+     * @param int $months
+     * @return array
+     */
+    private function getReservationCountsForPastMonths($months)
+    {
+        $counts = [];
+        for ($i = $months - 1; $i >= 0; $i--) {
+            $date = Carbon::now()->subMonths($i);
+            $count = Reservation::whereMonth('created_at', $date->month)
+                ->whereYear('created_at', $date->year)
+                ->count();
+
+            $counts[] = [
+                'month' => $date->format('F Y'),
+                'count' => $count,
+            ];
         }
-
-        $averageRevenuePerReservation = $totalRevenue / $totalReservations;
-
-        // Forecasted revenue for the next month
-        return $predictedReservations * $averageRevenuePerReservation;
+        return $counts;
     }
 }

@@ -74,7 +74,7 @@
                                 <input type="checkbox" name="rooms[]" id="room_{{ $room->id }}"
                                     value="{{ $room->id }}" class="mr-2">
                                 <label for="room_{{ $room->id }}" class="text-gray-600 text-sm">
-                                    {{ $room->room_number }} - {{ $room->room_type }} - {{ $room->stay_type }}
+                                    {{ $room->room_number }} - {{ $room->room_type }} - pax({{$room->pax}}) - ₱{{ $room->price }}
                                 </label>
                             </div>
                         </div>
