@@ -23,11 +23,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/reservations/check-date', [ReservationController::class, 'checkDate'])->name('reservations.check-date');
     Route::resource('/reservations', ReservationController::class);
     Route::get('/reservations/receipt/{id}', [ReservationController::class, 'showReceipt'])->name('receipt');
-    Route::get('/settings', [SettingController::class, 'index'] )->name('settings');
+    Route::get('/settings', [SettingController::class, 'index'])->name('settings');
     Route::get('/settings/password', [SettingController::class, 'changePassword'])->name('password.change');
     Route::post('/password/update', [SettingController::class, 'updatePassword'])->name('password.update');
 
     Route::middleware(['role:admin'])->group(function () {
+        Route::get('/settings/edit', [SettingController::class, 'edit'])->name('settings.edit');
+        Route::post('/settings/edit', [SettingController::class, 'update'])->name('settings.update');
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
         Route::resource('/rooms', RoomController::class)->except(['show']);
         Route::resource('/employees', EmployeeController::class)->except(['show']);
