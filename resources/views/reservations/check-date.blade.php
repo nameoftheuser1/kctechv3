@@ -5,17 +5,27 @@
 
         <form action="{{ route('reservations.create') }}" method="GET" class="flex flex-col w-full justify-center">
             <div class="mb-4 w-full">
-                <label for="check_in" class="block text-gray-700 font-bold mb-2 text-sm">Check-in Date (month, day, year)</label>
-                <input type="datetime-local" name="check_in" id="check_in" value="{{ $currentDateTime }}"
+                <label for="check_in" class="block text-gray-700 font-bold mb-2 text-sm">Check-in Date (month, day,
+                    year)</label>
+                <input type="datetime-local" name="check_in" id="check_in"
+                    value="{{ old('check_in', $currentDateTime) }}"
                     class="w-full text-gray-600 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
                     required>
+                @error('check_in')
+                    <span class="text-red-500 text-xs">{{ $message }}</span>
+                @enderror
             </div>
 
             <div class="mb-4 w-full">
-                <label for="check_out" class="block text-gray-700 font-bold mb-2 text-sm">Check-out Date (month, day, year)</label>
-                <input type="datetime-local" name="check_out" id="check_out" value="{{ $currentDateTime }}"
+                <label for="check_out" class="block text-gray-700 font-bold mb-2 text-sm">Check-out Date (month, day,
+                    year)</label>
+                <input type="datetime-local" name="check_out" id="check_out"
+                    value="{{ old('check_out', $currentDateTime) }}"
                     class="w-full text-gray-600 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
                     required>
+                @error('check_out')
+                    <span class="text-red-500 text-xs">{{ $message }}</span>
+                @enderror
             </div>
 
             <div>

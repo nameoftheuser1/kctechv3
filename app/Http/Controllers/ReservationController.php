@@ -63,6 +63,12 @@ class ReservationController extends Controller
     public function create(Request $request)
     {
         $rooms = Room::all();
+        $today = now()->toDateString();
+
+        $request->validate([
+            'check_in' => ['required', 'date', 'after_or_equal:' . $today],
+            'check_out' => ['required', 'date', 'after:check_in'],
+        ]);
 
         if ($request->has(['check_in', 'check_out'])) {
             $checkIn = $request->input('check_in');
@@ -83,6 +89,33 @@ class ReservationController extends Controller
         return view('reservations.create', compact('rooms'));
     }
 
+    public function edit(Reservation $reservation)
+    {
+        // Fetch all rooms
+        $rooms = Room::all();
+
+        // Get the check-in and check-out dates from the reservation
+        $checkIn = $reservation->check_in->toDateString();
+        $checkOut = $reservation->check_out->toDateString();
+
+        // Check if there are any reservations that overlap with the current reservation's dates
+        $reservedRoomIds = Reservation::where(function ($query) use ($checkIn, $checkOut) {
+            $query->whereBetween('check_in', [$checkIn, $checkOut])
+                ->orWhereBetween('check_out', [$checkIn, $checkOut])
+                ->orWhere(function ($query) use ($checkIn, $checkOut) {
+                    $query->where('check_in', '<=', $checkIn)
+                        ->where('check_out', '>=', $checkOut);
+                });
+        })->with('rooms')->get()->pluck('rooms.*')->flatten()->pluck('id')->toArray();
+
+        // Filter out reserved rooms
+        $availableRooms = $rooms->whereNotIn('id', $reservedRoomIds);
+
+        // Return the edit view with the reservation and available rooms data
+        return view('reservations.edit', compact('reservation', 'availableRooms'));
+    }
+
+
     public function show(Reservation $reservation)
     {
         return view('reservations.show', compact('reservation'));
@@ -91,11 +124,6 @@ class ReservationController extends Controller
 
     public function store(Request $request)
     {
-        // Log the incoming request data
-        Log::info('Creating a new reservation', [
-            'request_data' => $request->all(),
-        ]);
-
         // Validate the request
         $request->validate([
             'name' => 'required|string|max:255',

@@ -15,7 +15,7 @@
                         <p class="text-sm font-medium text-gray-600">Total Revenue</p>
                         <h3 class="text-2xl font-bold text-green-600 mt-1">₱{{ number_format($totalRevenue, 2) }}</h3>
                         <p class="text-sm font-medium text-gray-600">
-                            This data covers the period from {{ $totalRevenueYear }} to {{ $currentYear }}.
+                            This data covers the period {{ $totalRevenueYear }}.
                         </p>
                     </div>
                     <div class="p-3 bg-green-100 rounded-full">
@@ -35,7 +35,7 @@
                         <p class="text-sm font-medium text-gray-600">Total Expenses</p>
                         <h3 class="text-2xl font-bold text-red-600 mt-1">₱{{ number_format($totalExpenses, 2) }}</h3>
                         <p class="text-sm font-medium text-gray-600">
-                            This data covers the period from {{ $totalExpensesYear }} to {{ $currentYear }}.
+                            This data covers the period {{ $totalExpensesYear }}.
                         </p>
                     </div>
                     <div class="p-3 bg-red-100 rounded-full">
