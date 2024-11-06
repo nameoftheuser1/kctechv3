@@ -48,6 +48,10 @@ return new class extends Migration
             [
                 'key' => 'historical_reservations_data',
                 'value' => 12,
+            ],
+            [
+                'key' => 'commission_percent',
+                'value' => 10,
             ]
         ]);
     }

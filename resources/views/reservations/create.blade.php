@@ -13,7 +13,7 @@
                     'name' => 'Enter guest name',
                     'address' => 'Enter guest address',
                     'pax' => 'Enter number of guests',
-                    'contact' => 'Enter contact name',
+                    'contact' => 'Enter contact number',
                     'car_unit_plate_number' => 'Enter car unit plate number (Optional, only if)',
                 ];
             @endphp

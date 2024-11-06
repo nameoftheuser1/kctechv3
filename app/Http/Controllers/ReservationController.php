@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Reservation;
 use App\Models\Room;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -195,5 +196,70 @@ class ReservationController extends Controller
         $reservation = Reservation::with('rooms')->findOrFail($id);
 
         return view('reservations.receipt', compact('reservation'));
+    }
+
+    /**
+     * Apply commission to the reservation.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function applyCommission($id)
+    {
+        // Find the reservation
+        $reservation = Reservation::findOrFail($id);
+
+        // Check if it's already commissioned
+        if ($reservation->is_commissioned) {
+            return redirect()->back()->with('message', 'Commission already applied.');
+        }
+
+        // Get the commission percent from settings
+        $commissionPercent = Setting::where('key', 'commission_percent')->value('value') ?? 10;
+
+        // Calculate commission and update total amount
+        $commissionAmount = $reservation->total_amount * ($commissionPercent / 100);
+        $reservation->total_amount -= $commissionAmount;
+        $reservation->is_commissioned = true;
+        $reservation->save();
+
+        return redirect()->back()->with('message', 'Commission applied successfully.');
+    }
+
+    public function updateRooms(Request $request)
+    {
+        $checkIn = $request->input('check_in');
+        $checkOut = $request->input('check_out');
+        $stayType = $request->input('stay_type');
+
+        $today = now()->toDateString();
+
+        $request->validate([
+            'check_in' => ['required', 'date', 'after_or_equal:' . $today],
+            'check_out' => ['required', 'date', 'after:check_in'],
+            'stay_type' => ['nullable', 'in:day tour,overnight'], // Add validation for stay type
+        ]);
+
+        // Get reserved rooms between check-in and check-out dates
+        $reservedRoomIds = Reservation::where(function ($query) use ($checkIn, $checkOut) {
+            $query->whereBetween('check_in', [$checkIn, $checkOut])
+                ->orWhereBetween('check_out', [$checkIn, $checkOut])
+                ->orWhere(function ($query) use ($checkIn, $checkOut) {
+                    $query->where('check_in', '<=', $checkIn)
+                        ->where('check_out', '>=', $checkOut);
+                });
+        })->with('rooms')->get()->pluck('rooms.*')->flatten()->pluck('id')->toArray();
+
+        // Get rooms that are not reserved, optionally filter by stay type
+        $query = Room::whereNotIn('id', $reservedRoomIds);
+
+        if ($stayType) {
+            $query->where('stay_type', $stayType);
+        }
+
+        $rooms = $query->get();
+
+        // Return available rooms as JSON
+        return response()->json(['rooms' => $rooms]);
     }
 }

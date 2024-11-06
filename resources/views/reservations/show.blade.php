@@ -39,8 +39,38 @@
                 <p class="text-gray-600 text-base">{{ $reservation->status }}</p>
             </div>
             <div>
-                <p class="text-gray-700 font-bold mb-2 text-sm">Total Amount</p>
-                <p class="text-gray-600 text-base">{{ $reservation->total_amount }}</p>
+                <p class="text-gray-700 font-bold mb-2 text-sm">Amount</p>
+                <p class="text-gray-600 text-base">₱{{ $reservation->formatted_total_amount }}</p>
+            </div>
+
+
+            <!-- Sales Report Section -->
+            <div>
+                <p class="text-gray-700 font-bold mb-2 text-sm">Sales Report</p>
+                <p class="text-gray-600 text-base">
+                    @php
+                        $salesReportsTotal = $reservation->salesReports->sum('amount');
+                    @endphp
+                    @if ($salesReportsTotal > 0)
+                        ₱{{ number_format($salesReportsTotal, 2) }}
+                    @else
+                        No sales report available
+                    @endif
+                </p>
+            </div>
+            <div>
+                <p class="text-gray-700 font-bold mb-2 text-sm">Total Amount (Including Sales Reports)</p>
+                <p class="text-gray-600 text-base">
+                    @php
+                        $salesReportsTotal = $reservation->salesReports->sum('amount');
+                        $totalAmountIncludingSalesReports = $reservation->total_amount + $salesReportsTotal;
+                    @endphp
+                    ₱{{ number_format($totalAmountIncludingSalesReports, 2) }}
+                </p>
+            </div>
+            <div>
+                <p class="text-gray-700 font-bold mb-2 text-sm">Is this commissioned?</p>
+                <p class="text-gray-600 text-base">{{ $reservation->is_commissioned ? 'Yes' : 'No' }}</p>
             </div>
         </div>
 
@@ -57,6 +87,23 @@
                     </button>
                 </form>
             @endif
+
+            <!-- Apply Commission Button -->
+            @if (!$reservation->is_commissioned)
+                <p class="text-gray-700 mt-2 me-3">
+                    This will be the amount given as commission:
+                    <strong>{{ number_format($reservation->total_amount * (config('settings.commission_percent') ?? 10 / 100), 2, '.', ',') }}</strong>
+                </p>
+                <form action="{{ route('reservations.applyCommission', $reservation->id) }}" method="POST"
+                    class="inline-block mr-4" id="apply-commission-form">
+                    @csrf
+                    <button type="button" onclick="openConfirmationModal()"
+                        class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        Apply Commission
+                    </button>
+                </form>
+            @endif
+
             <a href="{{ route('receipt', $reservation->id) }}"
                 class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 me-2 ">
                 View Receipt
@@ -67,4 +114,42 @@
             </a>
         </div>
     </div>
+
+    <div id="confirmation-modal"
+        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
+        <div class="bg-white p-6 rounded-lg w-96">
+            <h3 class="text-xl font-bold text-gray-700 mb-4">Confirm Apply Commission</h3>
+            <p class="text-gray-600 mb-4">Are you sure you want to apply the commission of
+                <strong>{{ number_format($reservation->total_amount * (config('settings.commission_percent') ?? 10 / 100), 2, '.', ',') }}</strong>?
+                This action cannot be undone.
+            </p>
+            <div class="flex justify-end">
+                <button onclick="closeConfirmationModal()"
+                    class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg mr-2">
+                    Cancel
+                </button>
+                <button onclick="submitCommissionForm()"
+                    class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg">
+                    Apply Commission
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Open the confirmation modal
+        function openConfirmationModal() {
+            document.getElementById('confirmation-modal').classList.remove('hidden');
+        }
+
+        // Close the confirmation modal
+        function closeConfirmationModal() {
+            document.getElementById('confirmation-modal').classList.add('hidden');
+        }
+
+        // Submit the commission form
+        function submitCommissionForm() {
+            document.getElementById('apply-commission-form').submit();
+        }
+    </script>
 </x-admin-layout>
