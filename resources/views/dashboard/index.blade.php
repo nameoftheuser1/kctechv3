@@ -47,11 +47,11 @@
                 </div>
             </div>
 
-            <!-- Overall Loss vs Income Card -->
+            <!-- Gross Income Card -->
             <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600">Overall Loss vs Income</p>
+                        <p class="text-sm font-medium text-gray-600">Gross Income</p>
                         <h3
                             class="text-2xl font-bold {{ $overallLossVsIncome < 0 ? 'text-red-600' : 'text-green-600' }} mt-1">
                             ₱{{ number_format(abs($overallLossVsIncome), 2) }}

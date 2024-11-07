@@ -33,6 +33,17 @@
                 @enderror
             @endforeach
 
+            @if (auth()->user()->role && auth()->user()->role == 'admin')
+                <div class="mb-4 w-full">
+                    <label for="status" class="block text-gray-700 font-bold mb-2 text-sm">Status</label>
+                    <select id="status" name="status"
+                        class="w-full bg-gray-50 border border-gray-300 text-gray-600 px-3 py-2 text-sm rounded-lg focus:ring-pink-500 focus:border-pink-500">
+                        <option value="reserved" {{ old('status') == 'reserved' ? 'selected' : '' }}>Reserve</option>
+                        <option value="check_in" {{ old('status') == 'check_in' ? 'selected' : '' }}>Check-in</option>
+                    </select>
+                </div>
+            @endif
+
             @php
                 $dateFields = ['check_in', 'check_out'];
             @endphp
@@ -64,8 +75,12 @@
             </div>
 
             <div class="mb-4">
-                <label class="block text-gray-700 font-bold mb-2 text-sm">Available rooms from
-                    {{ request('check_in') }} to {{ request('check_out') }}</label>
+                <label class="block text-gray-700 font-bold mb-2 text-sm">
+                    Available rooms from
+                    {{ \Carbon\Carbon::parse(request('check_in'))->format('F j, Y h:i A') }}
+                    to
+                    {{ \Carbon\Carbon::parse(request('check_out'))->format('F j, Y h:i A') }}
+                </label>
                 <div id="room-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 hidden">
                     @foreach ($rooms as $room)
                         <div class="room-item" data-stay-type="{{ $room->stay_type }}"
@@ -74,7 +89,8 @@
                                 <input type="checkbox" name="rooms[]" id="room_{{ $room->id }}"
                                     value="{{ $room->id }}" class="mr-2">
                                 <label for="room_{{ $room->id }}" class="text-gray-600 text-sm">
-                                    {{ $room->room_number }} - {{ $room->room_type }} - pax({{$room->pax}}) - ₱{{ $room->price }}
+                                    {{ $room->room_number }} - {{ $room->room_type }} - pax({{ $room->pax }}) -
+                                    ₱{{ $room->price }}
                                 </label>
                             </div>
                         </div>

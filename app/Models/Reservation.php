@@ -22,6 +22,7 @@ class Reservation extends Model
         'status',
         'total_amount',
         'is_commissioned',
+        'checkout_time',
     ];
 
     public function getFormattedTotalAmountAttribute(): string
@@ -32,6 +33,7 @@ class Reservation extends Model
     protected $casts = [
         'check_in' => 'datetime',
         'check_out' => 'datetime',
+        'checkout_time' => 'datetime',
         'total_amount' => 'decimal:2',
     ];
 

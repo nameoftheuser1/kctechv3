@@ -6,6 +6,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\ReservationStatusController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\RoomGalleryController;
 use App\Http\Controllers\SalesReportController;
@@ -24,6 +25,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/reservations/check-date', [ReservationController::class, 'checkDate'])->name('reservations.check-date');
     Route::get('/reservations/update-rooms', [ReservationController::class, 'updateRooms']);
     Route::resource('/reservations', ReservationController::class);
+    Route::patch('reservations/{reservation}/check-in', [ReservationStatusController::class, 'checkIn'])->name('reservations.check-in');
+    Route::patch('reservations/{reservation}/cancel', [ReservationStatusController::class, 'cancel'])->name('reservations.cancel');
     Route::get('/reservations/receipt/{id}', [ReservationController::class, 'showReceipt'])->name('receipt');
     Route::get('/settings', [SettingController::class, 'index'])->name('settings');
     Route::get('/settings/password', [SettingController::class, 'changePassword'])->name('password.change');

@@ -6,6 +6,7 @@ use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class ReservationController extends Controller
@@ -126,7 +127,7 @@ class ReservationController extends Controller
     public function store(Request $request)
     {
         // Validate the request
-        $request->validate([
+        $rules = [
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'pax' => 'required|integer|min:1',
@@ -136,7 +137,14 @@ class ReservationController extends Controller
             'check_out' => 'required|date|after:check_in',
             'rooms' => 'required|array',
             'rooms.*' => 'exists:rooms,id',
-        ]);
+        ];
+
+        // Add status validation only if the user is an admin
+        if (Auth::user()->role && Auth::user()->role == 'admin') {
+            $rules['status'] = 'required|in:reserved,check_in';
+        }
+
+        $request->validate($rules);
 
         try {
             $totalAmount = 0;
@@ -144,6 +152,8 @@ class ReservationController extends Controller
             foreach ($rooms as $room) {
                 $totalAmount += $room->price;
             }
+
+            $status = Auth::user()->role && Auth::user()->role == 'admin' ? $request->status : 'reserved';
 
             $reservation = Reservation::create([
                 'name' => $request->name,
@@ -154,6 +164,7 @@ class ReservationController extends Controller
                 'check_in' => $request->check_in,
                 'check_out' => $request->check_out,
                 'total_amount' => $totalAmount,
+                'status' => $status,
             ]);
 
             $reservation->rooms()->attach($request->rooms);
@@ -177,12 +188,18 @@ class ReservationController extends Controller
         return redirect()->route('receipt', ['id' => $reservation->id])->with('success', 'Reservation created successfully.');
     }
 
+
     public function update(Reservation $reservation, Request $request)
     {
         // Validate the request data
         $request->validate([
             'status' => 'required|string|in:check out',
         ]);
+
+        // Check if the status is 'check out' and update the checkout_time
+        if ($request->input('status') === 'check out') {
+            $reservation->checkout_time = now(); // Set current date and time
+        }
 
         // Update the reservation status
         $reservation->status = $request->input('status');
