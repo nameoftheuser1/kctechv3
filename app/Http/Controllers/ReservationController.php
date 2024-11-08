@@ -21,38 +21,30 @@ class ReservationController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->where('contact', 'like', '%' . $search . '%')
                     ->orWhere('name', 'like', '%' . $search . '%')
-                    ->orWhere('address', 'like', '%' . $search . '%')
-                    ->orWhereHas('rooms', function ($q) use ($search) {
-                        $q->where('name', 'like', '%' . $search . '%');
-                    });
+                    ->orWhere('address', 'like', '%' . $search . '%');
             });
         }
 
         // Filter by month
         if ($request->has('month') && $request->month != '') {
-            $month = $request->month;
-            $query->whereMonth('check_in', $month);
+            $query->whereMonth('check_in', $request->month);
         }
 
         // Filter by day
         if ($request->has('day') && $request->day != '') {
-            $day = $request->day;
-            $query->whereDay('check_in', $day);
-        }
-
-        // Filter by room id
-        if ($request->has('room_id') && $request->room_id != '') {
-            $roomId = $request->room_id;
-            $query->whereHas('rooms', function ($q) use ($roomId) {
-                $q->where('id', $roomId);
-            });
+            $query->whereDay('check_in', $request->day);
         }
 
         // Fetch paginated reservations with associated rooms
-        $reservations = $query->with('rooms')->paginate(10);
+        $reservations = $query->paginate(10);
+
+        if ($request->ajax()) {
+            return view('reservations.partials.table', compact('reservations'))->render();
+        }
 
         return view('reservations.index', compact('reservations'));
     }
+
 
 
     public function checkDate()

@@ -199,7 +199,7 @@
             new Chart(gaugeCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Revenue', 'Expenses', 'Salaries'],
+                    labels: ['Gross Income', 'Expenses', 'Salaries'],
                     datasets: [{
                         data: [totalRevenue, totalExpenses, totalSalaries],
                         backgroundColor: [
