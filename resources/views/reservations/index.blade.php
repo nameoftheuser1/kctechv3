@@ -64,7 +64,7 @@
                 </thead>
                 <tbody id="reservations-table-body">
                     @forelse ($reservations as $reservation)
-                        <tr class="bg-white border-b hover:bg-gray-100 cursor-pointer"
+                        <tr class="bg-white border-b hover:bg-gray-100"
                             onclick="window.location='{{ route('reservations.show', $reservation) }}'">
                             <td class="px-6 py-4">{{ $reservation->name }}</td>
                             <td class="px-6 py-4">{{ $reservation->address }}</td>
@@ -77,7 +77,21 @@
                                 class="px-6 py-4 {{ $reservation->checkout_time > $reservation->check_out ? 'text-red-500' : '' }}">
                                 {{ $reservation->checkout_time ? $reservation->checkout_time->format('F j, Y h:i A') : 'N/A' }}
                             </td>
-                            <td class="px-6 py-4">{{ ucfirst($reservation->status) }}</td>
+                            <td class="px-6 py-4 flex items-center space-x-4" onclick="event.stopPropagation()">
+                                <span class="capitalize text-gray-800">{{ ucfirst($reservation->status) }}</span>
+                                @if ($reservation->status == 'reserved' && auth()->user()->role == 'admin')
+                                    <button type="button"
+                                        class="text-blue-500 hover:text-blue-700 font-semibold py-1 px-3 border border-blue-500 rounded-md transition-all duration-200 ease-in-out hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        onclick="openCheckInModal({{ $reservation->id }}, '{{ $reservation->name }}')">
+                                        Check
+                                    </button>
+                                    <button type="button"
+                                        class="text-red-500 hover:text-red-700 font-semibold py-1 px-3 border border-red-500 rounded-md transition-all duration-200 ease-in-out hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                                        onclick="openCancelModal({{ $reservation->id }}, '{{ $reservation->name }}')">
+                                        Cancel
+                                    </button>
+                                @endif
+                            </td>
                             <td class="px-6 py-4">{{ number_format($reservation->total_amount, 2) }}</td>
                         </tr>
                     @empty
@@ -128,7 +142,8 @@
     </div>
 
     <!-- Check-in Modal -->
-    <div id="checkInModal" class="hidden fixed inset-0 z-50 flex justify-center items-center bg-gray-500 bg-opacity-50">
+    <div id="checkInModal"
+        class="hidden fixed inset-0 z-50 flex justify-center items-center bg-gray-500 bg-opacity-50">
         <div class="bg-white p-4 rounded-lg w-1/3">
             <h3 class="text-lg font-semibold">Confirm Check-in</h3>
             <p>Are you sure you want to check in for <span id="checkInName"></span>?</p>
