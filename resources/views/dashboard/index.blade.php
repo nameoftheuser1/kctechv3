@@ -60,12 +60,13 @@
                     <div class="p-3 rounded-full {{ $overallLossVsIncome < 0 ? 'bg-red-100' : 'bg-green-100' }}">
                         <svg class="w-6 h-6 {{ $overallLossVsIncome < 0 ? 'text-red-600' : 'text-green-600' }}"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            @if ($overallLossVsIncome < 0)
+                            @if ($overallLossVsIncome
+                            < 0)
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                             @else
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             @endif
                         </svg>
                     </div>
@@ -195,17 +196,19 @@
             const totalRevenue = @json($totalRevenue);
             const totalExpenses = @json($totalExpenses);
             const totalSalaries = @json($totalSalaries);
+            const totalCommissions = @json($totalCommissions); // Add total commissions
 
             new Chart(gaugeCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Gross Income', 'Expenses', 'Salaries'],
+                    labels: ['Gross Income', 'Expenses', 'Salaries', 'Commissions'], // Add 'Commissions' label
                     datasets: [{
-                        data: [totalRevenue, totalExpenses, totalSalaries],
+                        data: [totalRevenue, totalExpenses, totalSalaries, totalCommissions], // Add totalCommissions to data
                         backgroundColor: [
-                            'rgba(34, 197, 94, 0.8)',
-                            'rgba(239, 68, 68, 0.8)',
-                            'rgba(59, 130, 246, 0.8)'
+                            'rgba(34, 197, 94, 0.8)', // Color for 'Gross Income'
+                            'rgba(239, 68, 68, 0.8)', // Color for 'Expenses'
+                            'rgba(59, 130, 246, 0.8)', // Color for 'Salaries'
+                            'rgba(255, 159, 64, 0.8)' // Color for 'Commissions'
                         ],
                         borderWidth: 2,
                         borderColor: '#ffffff'

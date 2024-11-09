@@ -37,12 +37,16 @@
                 <div class="mb-4 w-full">
                     <label for="status" class="block text-gray-700 font-bold mb-2 text-sm">Status</label>
                     <select id="status" name="status"
-                        class="w-full bg-gray-50 border border-gray-300 text-gray-600 px-3 py-2 text-sm rounded-lg focus:ring-pink-500 focus:border-pink-500">
-                        <option value="reserved" {{ old('status') == 'reserved' ? 'selected' : '' }}>Reserve</option>
-                        <option value="check_in" {{ old('status') == 'check_in' ? 'selected' : '' }}>Check-in</option>
+                            class="w-full bg-gray-50 border border-gray-300 text-gray-600 px-3 py-2 text-sm rounded-lg focus:ring-pink-500 focus:border-pink-500">
+                            <option value="reserved" {{ old('status') == 'reserved' ? 'selected' : '' }}>Reserve</option>
+                            <option value="check_in" {{ old('status') == 'check in' ? 'selected' : '' }}>Check-in</option>
                     </select>
                 </div>
             @endif
+
+            @error('status')
+                <p class="text-sm text-red-600 mb-4">{{ $message }}</p>
+            @enderror
 
             @php
                 $dateFields = ['check_in', 'check_out'];

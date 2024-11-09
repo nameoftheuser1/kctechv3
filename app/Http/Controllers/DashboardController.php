@@ -17,6 +17,7 @@ class DashboardController extends Controller
         // Fetch the total_revenue_date and total_expenses_date from the settings table
         $totalRevenueYear = DB::table('settings')->where('key', 'total_revenue_year')->value('value');
         $totalExpensesYear = DB::table('settings')->where('key', 'total_expenses_year')->value('value');
+        $totalCommissionsYear = DB::table('settings')->where('key', 'total_commissions_year')->value('value') ?? 2024;
         $totalSalariesYear = DB::table('settings')->where('key', 'total_salaries_year')->value('value');
         $predictSalesMonth = DB::table('settings')->where('key', 'predict_sales_month')->value('value');
         $predictReservationsMonth = DB::table('settings')->where('key', 'predict_reservations_month')->value('value');
@@ -34,6 +35,9 @@ class DashboardController extends Controller
         // Total salaries for the specified year (show 0 if null)
         $totalSalaries = Employee::whereYear('payout_date', $totalSalariesYear)
             ->sum('salary') ?? 0;
+
+        $totalCommissions = Reservation::whereYear('check_in', $totalCommissionsYear)
+            ->sum('commission_amount') ?? 0;
 
         // Predict sales for the next 6 months
         $predictedSales = $this->predictSales($predictSalesMonth);
@@ -55,6 +59,7 @@ class DashboardController extends Controller
             'totalRevenue' => $totalRevenue,
             'totalExpenses' => $totalExpenses,
             'totalSalaries' => $totalSalaries,
+            'totalCommissions' =>  $totalCommissions,
             'predictedSales' => $predictedSales,
             'overallLossVsIncome' => $overallLossVsIncome,
             'reservationCounts' => $reservationCounts,
