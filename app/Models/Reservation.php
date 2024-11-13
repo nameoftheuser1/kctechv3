@@ -23,6 +23,7 @@ class Reservation extends Model
         'total_amount',
         'is_commissioned',
         'checkout_time',
+        'commission_amount',
     ];
 
     public function getFormattedTotalAmountAttribute(): string
@@ -35,6 +36,7 @@ class Reservation extends Model
         'check_out' => 'datetime',
         'checkout_time' => 'datetime',
         'total_amount' => 'decimal:2',
+        'commission_amount' => 'decimal:2'
     ];
 
     public function rooms(): BelongsToMany

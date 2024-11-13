@@ -133,9 +133,12 @@ class ReservationController extends Controller
 
         // Add status validation only if the user is an admin
         if (Auth::user()->role && Auth::user()->role == 'admin') {
-            $rules['status'] = 'required|in:reserved,check_in';
+            $rules['status'] = 'required|in:reserved,check in';
+        } else {
+            // Optionally, remove the status field from the request for non-admins
+            $request->merge(['status' => 'reserved']);
         }
-
+        
         $request->validate($rules);
 
         try {
@@ -226,10 +229,15 @@ class ReservationController extends Controller
         // Get the commission percent from settings
         $commissionPercent = Setting::where('key', 'commission_percent')->value('value') ?? 10;
 
-        // Calculate commission and update total amount
+        // Calculate commission amount
         $commissionAmount = $reservation->total_amount * ($commissionPercent / 100);
+
+        // Update the commission amount and total amount
+        $reservation->commission_amount = $commissionAmount;
         $reservation->total_amount -= $commissionAmount;
         $reservation->is_commissioned = true;
+
+        // Save the reservation with the updated commission and total amount
         $reservation->save();
 
         return redirect()->back()->with('message', 'Commission applied successfully.');
