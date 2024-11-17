@@ -60,11 +60,6 @@
                             <td class="px-6 py-4">{{ $reservation->check_out->format('F j, Y h:i A') }}</td>
                             <td class="px-6 py-4">{{ number_format($reservation->total_amount, 2) }}</td>
                             <td class="px-6 py-4 flex items-center space-x-4">
-                                <button
-                                    class="text-green-500 hover:text-green-700 font-semibold py-1 px-3 border border-green-500 rounded-md transition-all duration-200 ease-in-out hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-500"
-                                    onclick="openConfirmModal({{ $reservation->id }}, '{{ $reservation->name }}')">
-                                    Confirm
-                                </button>
                                 <form action="{{ route('reservations.reserve', $reservation) }}" method="POST">
                                     @csrf
                                     @method('PATCH')
@@ -73,11 +68,6 @@
                                         Reserve
                                     </button>
                                 </form>
-                                <button
-                                    class="text-red-500 hover:text-red-700 font-semibold py-1 px-3 border border-red-500 rounded-md transition-all duration-200 ease-in-out hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-                                    onclick="openCancelModal({{ $reservation->id }}, '{{ $reservation->name }}')">
-                                    Cancel
-                                </button>
                             </td>
                         </tr>
                     @empty

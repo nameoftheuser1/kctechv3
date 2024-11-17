@@ -41,6 +41,6 @@ class PendingReservationController extends Controller
             return view('reservations.partials.table', compact('reservations'))->render();
         }
 
-        return view('reservations.index', compact('reservations'));
+        return view('pending-reservation.index', compact('reservations'));
     }
 }
