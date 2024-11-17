@@ -24,6 +24,7 @@ class Reservation extends Model
         'is_commissioned',
         'checkout_time',
         'commission_amount',
+        'down_payment',
     ];
 
     public function getFormattedTotalAmountAttribute(): string

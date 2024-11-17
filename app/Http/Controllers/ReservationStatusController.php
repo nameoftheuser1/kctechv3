@@ -42,4 +42,22 @@ class ReservationStatusController extends Controller
 
         return redirect()->route('reservations.index')->with('success', 'Reservation canceled.');
     }
+
+    /**
+     * Update the reservation status to "reserved".
+     *
+     * @param  int  $reservationId
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function reserve($reservationId)
+    {
+        $reservation = Reservation::find($reservationId);
+
+        if ($reservation) {
+            $reservation->status = 'reserved';
+            $reservation->save();
+        }
+
+        return redirect()->route('reservations.index')->with('success', 'Reservation status set to reserved.');
+    }
 }

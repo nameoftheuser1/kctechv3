@@ -1,9 +1,9 @@
 <x-admin-layout>
     <div class="container mx-auto px-4 py-8 w-full sm:w-1/2 border rounded-lg bg-white mt-0 sm:mt-10">
-        <a href="{{ route('reservations.index') }}" class="text-blue-500 text-sm underline">&larr; back to reservation
+        <a href="{{ route('reservations.index') }}" class="text-blue-500 text-sm underline">&larr; back to bookings
             list</a>
-        <h1 class="text-3xl font-bold text-slate-700 mt-4">Edit Reservation</h1>
-        <p class="text-sm text-slate-500 mb-6">Update check-in details</p>
+        <h1 class="text-3xl font-bold text-slate-700 mt-4">Edit Bookings</h1>
+        <p class="text-sm text-slate-500 mb-6">Update booking details</p>
         <form action="{{ route('reservations.update', $reservation->id) }}" method="POST" id="edit-reservation-form"
             class="flex flex-col w-full justify-center">
             @csrf

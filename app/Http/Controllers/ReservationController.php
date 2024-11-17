@@ -92,7 +92,7 @@ class ReservationController extends Controller
         $checkIn = $reservation->check_in->toDateString();
         $checkOut = $reservation->check_out->toDateString();
 
-        // Check if there are any reservations that overlap with the current reservation's dates
+        // Check if there are any reservations that overlap with the current reservation's dates !! update to only the status that is not pending
         $reservedRoomIds = Reservation::where(function ($query) use ($checkIn, $checkOut) {
             $query->whereBetween('check_in', [$checkIn, $checkOut])
                 ->orWhereBetween('check_out', [$checkIn, $checkOut])
@@ -100,7 +100,15 @@ class ReservationController extends Controller
                     $query->where('check_in', '<=', $checkIn)
                         ->where('check_out', '>=', $checkOut);
                 });
-        })->with('rooms')->get()->pluck('rooms.*')->flatten()->pluck('id')->toArray();
+        })
+            ->with(['rooms' => function ($query) {
+                $query->where('status', '!=', 'pending');
+            }])
+            ->get()
+            ->pluck('rooms.*')
+            ->flatten()
+            ->pluck('id')
+            ->toArray();
 
         // Filter out reserved rooms
         $availableRooms = $rooms->whereNotIn('id', $reservedRoomIds);
@@ -138,7 +146,7 @@ class ReservationController extends Controller
             // Optionally, remove the status field from the request for non-admins
             $request->merge(['status' => 'reserved']);
         }
-        
+
         $request->validate($rules);
 
         try {
@@ -164,12 +172,6 @@ class ReservationController extends Controller
 
             $reservation->rooms()->attach($request->rooms);
 
-            // Log the successful creation of the reservation
-            Log::info('Reservation created successfully', [
-                'reservation_id' => $reservation->id,
-                'rooms' => $request->rooms,
-                'total_amount' => $totalAmount,
-            ]);
         } catch (\Exception $e) {
             Log::error('Error creating reservation', [
                 'error_message' => $e->getMessage(),

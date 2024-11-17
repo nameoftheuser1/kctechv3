@@ -17,14 +17,14 @@
                 <path stroke-linecap="round" stroke-linejoin="round"
                     d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
             </svg>
-            Check ins
+            Booking
         </a>
     </div>
 
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
         <caption class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white">
-            Check in
-            <p class="mt-1 text-sm font-normal text-gray-500">Browse a list of reservations in our system.</p>
+            Bookings
+            <p class="mt-1 text-sm font-normal text-gray-500">Browse a list of booking in our system.</p>
 
             <!-- Filter Form -->
             <form id="filter-form" class="flex flex-col md:flex-row mb-4">
