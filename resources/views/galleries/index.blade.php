@@ -8,7 +8,8 @@
     </div>
 
     <div class="mb-4">
-        <a href="{{ route('galleries.create') }}" class="text-sm bg-slate-600 text-white p-2 rounded-lg flex items-center w-fit">
+        <a href="{{ route('galleries.create') }}"
+            class="text-sm bg-slate-600 text-white p-2 rounded-lg flex items-center w-fit">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-6 h-6 mr-1">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -37,30 +38,38 @@
                 @foreach ($roomGallery as $image)
                     <div class="bg-white border rounded-lg overflow-hidden shadow-md">
                         <div class="aspect-square relative group">
-                            <img src="{{ asset($image->image_path) }}"
-                                 alt="{{ $image->name }}"
-                                 class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                            <img src="{{ asset($image->image_path) }}" alt="{{ $image->name }}"
+                                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
 
                             <!-- Overlay with actions -->
-                            <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-2">
+                            <div
+                                class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-2">
                                 <!-- View Button -->
-                                <button onclick="openImageModal('{{ asset($image->image_path) }}', '{{ $image->name }}')"
-                                        class="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                <button
+                                    onclick="openImageModal('{{ asset($image->image_path) }}', '{{ $image->name }}')"
+                                    class="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                     </svg>
                                 </button>
 
                                 <!-- Delete Button -->
-                                <button onclick="showConfirmationModal('Are you sure you want to delete this image?', 'delete-form-{{ $image->id }}')"
-                                        class="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                <button
+                                    onclick="showConfirmationModal('Are you sure you want to delete this image?', 'delete-form-{{ $image->id }}')"
+                                    class="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                     </svg>
                                 </button>
-                                <form id="delete-form-{{ $image->id }}" action="{{ route('galleries.destroy', $image) }}"
-                                    method="POST" class="hidden">
+                                <form id="delete-form-{{ $image->id }}"
+                                    action="{{ route('galleries.destroy', $image->id) }}" method="POST"
+                                    class="hidden">
                                     @csrf
                                     @method('DELETE')
                                 </form>
@@ -80,11 +89,15 @@
                 <div class="relative">
                     <img id="modalImage" src="" alt="" class="w-full h-auto rounded-lg">
                     <button onclick="closeImageModal()" class="absolute top-4 right-4 text-white hover:text-gray-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
-                    <h3 id="modalImageName" class="text-white text-xl font-semibold absolute bottom-4 left-4 bg-black bg-opacity-50 px-4 py-2 rounded"></h3>
+                    <h3 id="modalImageName"
+                        class="text-white text-xl font-semibold absolute bottom-4 left-4 bg-black bg-opacity-50 px-4 py-2 rounded">
+                    </h3>
                 </div>
             </div>
         </div>

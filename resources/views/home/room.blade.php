@@ -25,11 +25,6 @@
                                         </div>
                                     @endif
                                 </div>
-                                {{-- <div class="absolute top-4 right-4">
-                                    <span class="bg-white/90 text-gray-900 px-3 py-1 rounded-full text-sm font-semibold">
-                                        Premium
-                                    </span>
-                                </div> --}}
                             </div>
 
                             <div class="p-6">
