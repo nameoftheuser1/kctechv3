@@ -72,35 +72,32 @@ class UserReservationController extends Controller
 
     public function checkAvailability(Request $request)
     {
-        $checkIn = $request->input('check_in');
-        $checkOut = $request->input('check_out');
-        $stayType = $request->input('stay_type');
+        try {
+            $checkIn = $request->input('check_in');
+            $checkOut = $request->input('check_out');
+            $stayType = $request->input('stay_type');
 
-        // Query reservations that overlap with the requested dates and exclude rooms with 'pending' status
-        $reservedRoomIds = Reservation::where(function ($query) use ($checkIn, $checkOut) {
-            $query->whereBetween('check_in', [$checkIn, $checkOut])
-                ->orWhereBetween('check_out', [$checkIn, $checkOut])
-                ->orWhere(function ($query) use ($checkIn, $checkOut) {
-                    $query->where('check_in', '<=', $checkIn)
-                        ->where('check_out', '>=', $checkOut);
-                });
-        })
-            ->with(['rooms' => function ($query) {
-                $query->where('status', '!=', 'pending');
-            }])
-            ->get()
-            ->pluck('rooms.*')
-            ->flatten()
-            ->pluck('id')
-            ->toArray();
+            // Logic to get reserved room IDs
+            $reservedRoomIds = Reservation::where(function ($query) use ($checkIn, $checkOut) {
+                $query->whereBetween('check_in', [$checkIn, $checkOut])
+                    ->orWhereBetween('check_out', [$checkIn, $checkOut])
+                    ->orWhere(function ($query) use ($checkIn, $checkOut) {
+                        $query->where('check_in', '<=', $checkIn)
+                            ->where('check_out', '>=', $checkOut);
+                    });
+            })->pluck('room_id');
 
-        // Fetch rooms that are not reserved and match the requested stay type
-        $availableRooms = Room::whereNotIn('id', $reservedRoomIds)
-            ->where('stay_type', $stayType)
-            ->get(['id', 'room_number', 'room_type', 'pax', 'price']); // Select the necessary fields
+            // Get available rooms
+            $availableRooms = Room::whereNotIn('id', $reservedRoomIds)
+                ->where('stay_type', $stayType)
+                ->get(['id', 'room_number', 'room_type', 'pax', 'price']);
 
-        // Return the list of available rooms as JSON
-        return response()->json(['rooms' => $availableRooms]);
+            return response()->json(['rooms' => $availableRooms], 200);
+        } catch (\Exception $e) {
+            // Log the error
+            Log::error('Error in checkAvailability: ' . $e->getMessage());
+            return response()->json(['error' => 'Something went wrong'], 500);
+        }
     }
 
     public function receipt($id)
