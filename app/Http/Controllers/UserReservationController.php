@@ -6,6 +6,7 @@ use App\Models\Reservation;
 use App\Models\Room;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class UserReservationController extends Controller
@@ -77,17 +78,20 @@ class UserReservationController extends Controller
             $checkOut = $request->input('check_out');
             $stayType = $request->input('stay_type');
 
-            // Logic to get reserved room IDs
-            $reservedRoomIds = Reservation::where(function ($query) use ($checkIn, $checkOut) {
-                $query->whereBetween('check_in', [$checkIn, $checkOut])
-                    ->orWhereBetween('check_out', [$checkIn, $checkOut])
-                    ->orWhere(function ($query) use ($checkIn, $checkOut) {
-                        $query->where('check_in', '<=', $checkIn)
-                            ->where('check_out', '>=', $checkOut);
-                    });
-            })->pluck('room_id');
+            // Logic to get reserved room IDs from the reservation_room pivot table
+            $reservedRoomIds = DB::table('reservation_room')
+                ->join('reservations', 'reservation_room.reservation_id', '=', 'reservations.id')
+                ->where(function ($query) use ($checkIn, $checkOut) {
+                    $query->whereBetween('reservations.check_in', [$checkIn, $checkOut])
+                        ->orWhereBetween('reservations.check_out', [$checkIn, $checkOut])
+                        ->orWhere(function ($query) use ($checkIn, $checkOut) {
+                            $query->where('reservations.check_in', '<=', $checkIn)
+                                ->where('reservations.check_out', '>=', $checkOut);
+                        });
+                })
+                ->pluck('reservation_room.room_id');
 
-            // Get available rooms
+            // Get available rooms that are not in the reserved room IDs and match the stay type
             $availableRooms = Room::whereNotIn('id', $reservedRoomIds)
                 ->where('stay_type', $stayType)
                 ->get(['id', 'room_number', 'room_type', 'pax', 'price']);
