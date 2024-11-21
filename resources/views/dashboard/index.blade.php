@@ -60,13 +60,12 @@
                     <div class="p-3 rounded-full {{ $overallLossVsIncome < 0 ? 'bg-red-100' : 'bg-green-100' }}">
                         <svg class="w-6 h-6 {{ $overallLossVsIncome < 0 ? 'text-red-600' : 'text-green-600' }}"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            @if ($overallLossVsIncome
-                            < 0)
+                            @if ($overallLossVsIncome < 0)
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                             @else
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             @endif
                         </svg>
                     </div>
@@ -143,17 +142,44 @@
 
             // Sales Prediction Chart
             const ctx = document.getElementById('salesPredictionChart').getContext('2d');
-            const predictions = @json($predictedSales);
+            const combinedSales = @json($combinedSales);
 
             new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: predictions.map(pred => pred.month),
+                    labels: combinedSales.map(sale => sale.month),
                     datasets: [{
-                        label: 'Predicted Sales',
-                        data: predictions.map(pred => pred.revenue),
-                        borderColor: 'rgb(34, 197, 94)',
-                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                        label: 'Combined Sales',
+                        data: combinedSales.map((sale, index) => {
+                            // Check if the sale is within the last 3 months for prediction
+                            return sale.revenue;
+                        }),
+                        borderColor: (context) => {
+                            const chart = context.chart;
+                            const {
+                                ctx,
+                                data
+                            } = chart;
+
+                            // Create gradient for distinguishing actual and predicted sales
+                            const gradient = ctx.createLinearGradient(0, 0, ctx.canvas.width,
+                            0);
+                            const totalDataPoints = combinedSales.length;
+                            const actualSalesCount = totalDataPoints -
+                            3; // Last 3 months are for predicted sales
+
+                            // Blue for actual sales, transitioning to red for predicted sales
+                            gradient.addColorStop(0,
+                            'rgba(34, 197, 94, 1)'); // Actual sales color
+                            gradient.addColorStop(actualSalesCount / totalDataPoints,
+                                'rgba(34, 197, 94, 1)');
+                            gradient.addColorStop(actualSalesCount / totalDataPoints,
+                                'rgba(255, 99, 132, 1)'); // Predicted sales color
+                            gradient.addColorStop(1, 'rgba(255, 99, 132, 1)');
+
+                            return gradient;
+                        },
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)', // Keeps the background fill the same
                         tension: 0.4,
                         fill: true,
                         pointBackgroundColor: 'rgb(34, 197, 94)',
@@ -170,7 +196,11 @@
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    return `Revenue: ₱${context.raw.toLocaleString()}`;
+                                    const sale = combinedSales[context.dataIndex];
+                                    const isPredicted = context.dataIndex >= (combinedSales.length -
+                                    3); // Last 3 months are predicted
+                                    const type = isPredicted ? 'Predicted Sales' : 'Actual Sales';
+                                    return `${type}: ₱${context.raw.toLocaleString()}`;
                                 }
                             }
                         }
@@ -201,9 +231,13 @@
             new Chart(gaugeCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Gross Income', 'Expenses', 'Salaries', 'Commissions'], // Add 'Commissions' label
+                    labels: ['Gross Income', 'Expenses', 'Salaries',
+                        'Commissions'
+                    ], // Add 'Commissions' label
                     datasets: [{
-                        data: [totalRevenue, totalExpenses, totalSalaries, totalCommissions], // Add totalCommissions to data
+                        data: [totalRevenue, totalExpenses, totalSalaries,
+                            totalCommissions
+                        ], // Add totalCommissions to data
                         backgroundColor: [
                             'rgba(34, 197, 94, 0.8)', // Color for 'Gross Income'
                             'rgba(239, 68, 68, 0.8)', // Color for 'Expenses'

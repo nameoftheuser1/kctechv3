@@ -40,7 +40,11 @@ class DashboardController extends Controller
             ->sum('commission_amount') ?? 0;
 
         // Predict sales for the next 6 months
-        $predictedSales = $this->predictSales($predictSalesMonth);
+        $historicalData = $this->getHistoricalSalesData(5); // Historical sales for 5 months
+        $predictedSales = $this->predictSales($predictSalesMonth); // Predicted sales for next N months
+
+        // Combine both arrays
+        $combinedSales = array_merge($historicalData, $predictedSales);
 
         // Get reservation counts for the past 12 months
         $reservationCounts = $this->getReservationCountsForPastMonths(12);
@@ -60,7 +64,7 @@ class DashboardController extends Controller
             'totalExpenses' => $totalExpenses,
             'totalSalaries' => $totalSalaries,
             'totalCommissions' =>  $totalCommissions,
-            'predictedSales' => $predictedSales,
+            'combinedSales' => $combinedSales,
             'overallLossVsIncome' => $overallLossVsIncome,
             'reservationCounts' => $reservationCounts,
             'predictedReservations' => $predictedReservations,
