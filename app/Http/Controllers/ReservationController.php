@@ -171,7 +171,6 @@ class ReservationController extends Controller
             ]);
 
             $reservation->rooms()->attach($request->rooms);
-
         } catch (\Exception $e) {
             Log::error('Error creating reservation', [
                 'error_message' => $e->getMessage(),

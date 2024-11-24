@@ -50,7 +50,7 @@
                 </thead>
                 <tbody id="reservations-table-body">
                     @forelse ($reservations as $reservation)
-                        <tr class="bg-white border-b hover:bg-gray-100"
+                        <tr class="bg-white border-b hover:bg-gray-100 cursor-pointer"
                             onclick="window.location='{{ route('reservations.show', $reservation) }}'">
                             <td class="px-6 py-4">{{ $reservation->name }}</td>
                             <td class="px-6 py-4">{{ $reservation->address }}</td>
