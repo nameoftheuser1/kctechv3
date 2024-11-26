@@ -46,6 +46,9 @@
             </form>
         </caption>
 
+        <p class="text-center">Total Reservations: {{ $reservationCount }}</p>
+
+
         <div class="hidden md:block">
             <table class="min-w-full text-sm text-left rtl:text-right text-gray-500">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50">

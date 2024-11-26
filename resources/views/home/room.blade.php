@@ -10,6 +10,13 @@
                 </p>
             </div>
 
+            <div class="my-6">
+                <button onclick="window.location.href='{{ route('user-form') }}'"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200">
+                    Book Now
+                </button>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @foreach ($roomsWithGalleries as $room)
                     <div class="group">
@@ -64,12 +71,6 @@
                                     </div>
                                 </div>
 
-                                <div class="mt-6">
-                                    <button onclick="window.location.href='{{ route('user-form') }}'"
-                                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200">
-                                        Book Now
-                                    </button>
-                                </div>
                             </div>
                         </div>
                     </div>

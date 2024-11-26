@@ -37,9 +37,9 @@
                 <div class="mb-4 w-full">
                     <label for="status" class="block text-gray-700 font-bold mb-2 text-sm">Status</label>
                     <select id="status" name="status"
-                            class="w-full bg-gray-50 border border-gray-300 text-gray-600 px-3 py-2 text-sm rounded-lg focus:ring-pink-500 focus:border-pink-500">
-                            <option value="reserved" {{ old('status') == 'reserved' ? 'selected' : '' }}>Reserve</option>
-                            <option value="check_in" {{ old('status') == 'check in' ? 'selected' : '' }}>Check-in</option>
+                        class="w-full bg-gray-50 border border-gray-300 text-gray-600 px-3 py-2 text-sm rounded-lg focus:ring-pink-500 focus:border-pink-500">
+                        <option value="check_in" {{ old('status') == 'check in' ? 'selected' : '' }}>Check-in</option>
+                        <option value="reserved" {{ old('status') == 'reserved' ? 'selected' : '' }}>Reserve</option>
                     </select>
                 </div>
             @endif
@@ -47,6 +47,18 @@
             @error('status')
                 <p class="text-sm text-red-600 mb-4">{{ $message }}</p>
             @enderror
+
+            <div class="mb-4 w-full" id="down-payment-container" style="display: none;">
+                <label for="down_payment" class="block text-gray-700 font-bold mb-2 text-sm">Down Payment</label>
+                <input type="number" name="down_payment" id="down_payment" step="0.01"
+                    class="w-full text-gray-600 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                    placeholder="Enter down payment amount">
+            </div>
+
+            @error('down_payment')
+                <p class="text-sm text-red-600 mb-4">{{ $message }}</p>
+            @enderror
+
 
             @php
                 $dateFields = ['check_in', 'check_out'];
@@ -67,6 +79,9 @@
                     <p class="text-sm text-red-600 mb-4">{{ $message }}</p>
                 @enderror
             @endforeach
+
+
+
 
             <div class="mb-4 w-full">
                 <label for="stay_type" class="block text-gray-700 font-bold mb-2 text-sm">Stay Type</label>
@@ -202,6 +217,16 @@
                         selectedStayType) ? 'flex' : 'none';
                 });
             });
+        });
+
+        document.getElementById('status').addEventListener('change', function() {
+            const downPaymentContainer = document.getElementById('down-payment-container');
+            if (this.value === 'reserved') {
+                downPaymentContainer.style.display = 'block';
+            } else {
+                downPaymentContainer.style.display = 'none';
+                document.getElementById('down_payment').value = ''; // Clear the input if hidden
+            }
         });
     </script>
 </x-admin-layout>
