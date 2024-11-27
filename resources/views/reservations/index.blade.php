@@ -10,7 +10,7 @@
     </div>
 
     <div class="mb-4">
-        <a href="{{ route('reservations.check-date') }}"
+        <a href="{{ route('reservations.create') }}"
             class="text-sm bg-slate-600 text-white p-2 rounded-lg flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-6 h-6 mr-1">

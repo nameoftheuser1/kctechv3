@@ -53,148 +53,103 @@ class ReservationController extends Controller
         return view('reservations.index', compact('reservations', 'reservationCount'));
     }
 
-
-
-    public function checkDate()
+    public function updateReservation(Request $request, $id)
     {
-        $currentDateTime = now()->format('Y-m-d\TH:i');
-        return view('reservations.check-date', compact('currentDateTime'));
+        $reservation = Reservation::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'pax' => 'required|integer|min:1',
+            'contact' => 'required|string|max:255',
+            'car_unit_plate_number' => 'nullable|string|max:255',
+            'check_in' => 'required|date|before_or_equal:check_out',
+            'check_out' => 'required|date|after_or_equal:check_in',
+            'stay_type' => 'required|in:day tour,overnight',
+            'rooms' => 'required|array|min:1',
+            'rooms.*' => 'exists:rooms,id',
+        ]);
+
+        // Calculate the duration of the stay
+        $checkIn = \Carbon\Carbon::parse($validatedData['check_in']);
+        $checkOut = \Carbon\Carbon::parse($validatedData['check_out']);
+        $duration = $checkIn->diffInDays($checkOut) + 1; // Adding 1 to include the check-in day
+
+        // Fetch the selected rooms
+        $rooms = Room::whereIn('id', $validatedData['rooms'])->get();
+
+        // Calculate the total price
+        $totalPrice = $rooms->sum(function ($room) use ($duration, $validatedData) {
+            if ($validatedData['stay_type'] === 'day tour') {
+                return $room->day_tour_rate * $duration;
+            } else { // Overnight
+                return $room->overnight_rate * $duration;
+            }
+        });
+
+        // Update reservation fields
+        $reservation->update(array_merge($validatedData, ['total_price' => $totalPrice]));
+
+        // Update rooms relationship
+        $reservation->rooms()->sync($validatedData['rooms']);
+
+        return redirect()
+            ->route('reservations.index')
+            ->with('success', 'Reservation updated successfully.');
     }
 
 
     public function create(Request $request)
     {
         $rooms = Room::all();
-        $today = now()->toDateString();
-
-        $request->validate([
-            'check_in' => ['required', 'date', 'after_or_equal:' . $today],
-            'check_out' => ['required', 'date', 'after:check_in'],
-        ]);
-
-        if ($request->has(['check_in', 'check_out'])) {
-            $checkIn = $request->input('check_in');
-            $checkOut = $request->input('check_out');
-
-            $reservedRoomIds = Reservation::where(function ($query) use ($checkIn, $checkOut) {
-                $query->whereBetween('check_in', [$checkIn, $checkOut])
-                    ->orWhereBetween('check_out', [$checkIn, $checkOut])
-                    ->orWhere(function ($query) use ($checkIn, $checkOut) {
-                        $query->where('check_in', '<=', $checkIn)
-                            ->where('check_out', '>=', $checkOut);
-                    });
-            })->with('rooms')->get()->pluck('rooms.*')->flatten()->pluck('id')->toArray();
-
-            $rooms = $rooms->whereNotIn('id', $reservedRoomIds);
-        }
 
         return view('reservations.create', compact('rooms'));
     }
 
     public function edit(Reservation $reservation)
     {
-        // Fetch all rooms
-        $rooms = Room::all();
+        $availableRooms = Room::all();
+        $selectedRoomIds = $reservation->rooms->pluck('id')->toArray();
 
-        // Get the check-in and check-out dates from the reservation
-        $checkIn = $reservation->check_in->toDateString();
-        $checkOut = $reservation->check_out->toDateString();
-
-        // Check if there are any reservations that overlap with the current reservation's dates !! update to only the status that is not pending
-        $reservedRoomIds = Reservation::where(function ($query) use ($checkIn, $checkOut) {
-            $query->whereBetween('check_in', [$checkIn, $checkOut])
-                ->orWhereBetween('check_out', [$checkIn, $checkOut])
-                ->orWhere(function ($query) use ($checkIn, $checkOut) {
-                    $query->where('check_in', '<=', $checkIn)
-                        ->where('check_out', '>=', $checkOut);
-                });
-        })
-            ->with(['rooms' => function ($query) {
-                $query->where('status', '!=', 'pending');
-            }])
-            ->get()
-            ->pluck('rooms.*')
-            ->flatten()
-            ->pluck('id')
-            ->toArray();
-
-        // Filter out reserved rooms
-        $availableRooms = $rooms->whereNotIn('id', $reservedRoomIds);
-
-        // Return the edit view with the reservation and available rooms data
-        return view('reservations.edit', compact('reservation', 'availableRooms'));
+        return view('reservations.edit', compact('reservation', 'availableRooms', 'selectedRoomIds'));
     }
-
 
     public function show(Reservation $reservation)
     {
         return view('reservations.show', compact('reservation'));
     }
 
-
     public function store(Request $request)
     {
-        // Validate the request
-        $rules = [
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'pax' => 'required|integer|min:1',
-            'contact' => 'required|string|max:50',
-            'car_unit_plate_number' => 'nullable|string|max:255',
+            'contact' => 'required|string',
             'check_in' => 'required|date',
             'check_out' => 'required|date|after:check_in',
+            'status' => 'required|string|in:check in,reserved',
             'rooms' => 'required|array',
             'rooms.*' => 'exists:rooms,id',
-        ];
+        ]);
 
-        // Add status validation for admin users
-        if (Auth::user()->role && Auth::user()->role == 'admin') {
-            $rules['status'] = 'required|in:reserved,check in';
-        } else {
-            $request->merge(['status' => 'reserved']);
-        }
+        $rooms = Room::whereIn('id', $validated['rooms'])->get();
+        $totalAmount = $rooms->sum('price');
 
-        // Add down_payment validation if status is "reserved"
-        if ($request->status === 'reserved') {
-            $rules['down_payment'] = 'nullable|numeric|min:0';
-        }
+        Reservation::create([
+            'name' => $validated['name'],
+            'address' => $validated['address'],
+            'pax' => $validated['pax'],
+            'contact' => $validated['contact'],
+            'car_unit_plate_number' => $request->input('car_unit_plate_number'),
+            'check_in' => $validated['check_in'],
+            'check_out' => $validated['check_out'],
+            'status' => $validated['status'],
+            'total_amount' => $totalAmount,
+            'down_payment' => round($totalAmount * 0.3),
+        ]);
 
-        $request->validate($rules);
-
-        try {
-            $totalAmount = 0;
-            $rooms = Room::whereIn('id', $request->rooms)->get();
-            foreach ($rooms as $room) {
-                $totalAmount += $room->price;
-            }
-
-            $status = Auth::user()->role && Auth::user()->role == 'admin' ? $request->status : 'reserved';
-
-            $reservation = Reservation::create([
-                'name' => $request->name,
-                'address' => $request->address,
-                'pax' => $request->pax,
-                'contact' => $request->contact,
-                'car_unit_plate_number' => $request->car_unit_plate_number,
-                'check_in' => $request->check_in,
-                'check_out' => $request->check_out,
-                'total_amount' => $totalAmount,
-                'status' => $status,
-                'down_payment' => $request->status === 'reserved' ? $request->down_payment : null,
-            ]);
-
-            $reservation->rooms()->attach($request->rooms);
-        } catch (\Exception $e) {
-            Log::error('Error creating reservation', [
-                'error_message' => $e->getMessage(),
-                'request_data' => $request->all(),
-            ]);
-
-            return redirect()->route('reservations.index')->with('error', 'Failed to create reservation.');
-        }
-
-        // Redirect to the receipt page with the reservation ID
-        return redirect()->route('receipt', ['id' => $reservation->id])->with('success', 'Reservation created successfully.');
+        return redirect()->route('reservations.index')->with('success', 'Reservation created successfully.');
     }
 
 

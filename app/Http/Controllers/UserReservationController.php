@@ -44,6 +44,7 @@ class UserReservationController extends Controller
                 return back()->with('error', 'Down payment is too low.');
             }
 
+            // Create reservation
             $reservation = Reservation::create([
                 'name' => $request->name,
                 'address' => $request->address,
@@ -56,6 +57,9 @@ class UserReservationController extends Controller
                 'status' => 'pending',
                 'down_payment' => $request->down_payment
             ]);
+
+            // Attach rooms to reservation
+            $reservation->rooms()->attach($request->rooms);
 
             return redirect()->route('user-form.receipt', [
                 'id' => $reservation->id,

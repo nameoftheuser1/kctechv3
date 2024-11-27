@@ -32,7 +32,7 @@ Route::post('/user-form/receipt', [PaymentController::class, 'store'])->name('pa
 Route::get('/thank-you', [PaymentController::class, 'thankYou'])->name('home.thankyou');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/reservations/check-date', [ReservationController::class, 'checkDate'])->name('reservations.check-date');
+    // Route::get('/reservations/check-date', [ReservationController::class, 'checkDate'])->name('reservations.check-date');
     Route::get('/reservations/update-rooms', [ReservationController::class, 'updateRooms']);
     Route::resource('/reservations', ReservationController::class);
     Route::get('/reservations/receipt/{id}', [ReservationController::class, 'showReceipt'])->name('receipt');
@@ -46,6 +46,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['role:admin'])->group(function () {
         Route::post('/reservations/{id}/apply-commission', [ReservationController::class, 'applyCommission'])->name('reservations.applyCommission');
+        Route::put('/reservation/edit/{reservation}', [ReservationController::class, 'updateReservation'])->name('reservations.update.full');
+
         Route::resource('/pending', PendingReservationController::class);
         Route::get('/settings/edit', [SettingController::class, 'edit'])->name('settings.edit');
         Route::post('/settings/edit', [SettingController::class, 'update'])->name('settings.update');

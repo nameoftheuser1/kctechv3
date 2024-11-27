@@ -34,6 +34,8 @@ class PendingReservationController extends Controller
             $query->whereDay('check_in', $request->day);
         }
 
+        $query->latest('check_in');
+
         // Fetch paginated reservations with associated rooms
         $reservations = $query->paginate(10);
 
