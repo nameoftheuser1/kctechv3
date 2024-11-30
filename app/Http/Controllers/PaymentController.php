@@ -50,6 +50,11 @@ class PaymentController extends Controller
 
         $reservation = Reservation::findOrFail($request->reservation);
 
+        // Check if a payment already exists for this reservation
+        if (Payment::where('reservation_id', $reservation->id)->exists()) {
+            return back()->with('error', 'A payment has already been recorded for this reservation.');
+        }
+
         // Validate the reference number and amount
         if ($reservation->down_payment != $request->amount) {
             return back()->with('error', 'The down payment amount does not match this booking. Please ensure that the reference number and amount match the contact number and down payment in your reservation.');
