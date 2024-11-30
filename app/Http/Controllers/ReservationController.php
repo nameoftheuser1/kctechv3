@@ -70,15 +70,18 @@ class ReservationController extends Controller
             'rooms.*' => 'exists:rooms,id',
         ]);
 
+        // Update the rooms relationship first
+        $reservation->rooms()->sync($validatedData['rooms']);
+
         // Calculate the duration of the stay
         $checkIn = \Carbon\Carbon::parse($validatedData['check_in']);
         $checkOut = \Carbon\Carbon::parse($validatedData['check_out']);
         $duration = $checkIn->diffInDays($checkOut) + 1; // Adding 1 to include the check-in day
 
-        // Fetch the selected rooms
+        // Fetch the updated rooms
         $rooms = Room::whereIn('id', $validatedData['rooms'])->get();
 
-        // Calculate the total price
+        // Calculate the new total price
         $totalPrice = $rooms->sum(function ($room) use ($duration, $validatedData) {
             if ($validatedData['stay_type'] === 'day tour') {
                 return $room->day_tour_rate * $duration;
@@ -87,11 +90,8 @@ class ReservationController extends Controller
             }
         });
 
-        // Update reservation fields
+        // Update reservation fields, including the recalculated total price
         $reservation->update(array_merge($validatedData, ['total_price' => $totalPrice]));
-
-        // Update rooms relationship
-        $reservation->rooms()->sync($validatedData['rooms']);
 
         return redirect()
             ->route('reservations.index')
