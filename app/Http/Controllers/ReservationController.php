@@ -165,7 +165,7 @@ class ReservationController extends Controller
         // Check if the status is 'check out'
         if ($request->input('status') === 'check out') {
             $checkoutTime = now();
-            $reservation->check_out = $checkoutTime; // Update the actual check-out time
+            $reservation->checkout_time = $checkoutTime; // Update the actual check-out time
 
             // Calculate late check-out fees
             $originalCheckout = $reservation->getOriginal('check_out'); // Get the scheduled check-out time

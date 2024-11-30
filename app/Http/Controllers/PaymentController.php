@@ -54,7 +54,7 @@ class PaymentController extends Controller
 
         // Validate the reference number and amount
         if ($reservation->down_payment != $request->amount) {
-            return back()->with('error', 'The reference number or down payment amount does not match this booking. Please ensure that the reference number and amount match the contact number and down payment in your reservation.');
+            return back()->with('error', 'The down payment amount does not match this booking. Please ensure that the reference number and amount match the contact number and down payment in your reservation.');
         }
 
         // Change the reservation status to 'reserved'
