@@ -24,7 +24,7 @@
             <p class="mt-1 text-sm font-normal text-gray-500">Browse a list of losses in our system.</p>
 
             <form id="search-form">
-                <input type="text" name="search" id="search-input" placeholder="Search expenses..."
+                <input type="text" name="search" id="search-input" placeholder="Search loss..."
                     class="p-2 border text-sm rounded w-full focus:ring-pink-600 mb-1 mt-2"
                     value="{{ request('search') }}" />
                 <button type="submit"

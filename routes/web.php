@@ -61,6 +61,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('/expenses', ExpenseController::class)->except(['show']);
         Route::resource('/galleries', RoomGalleryController::class);
         Route::resource('/sales-reports', SalesReportController::class);
+        Route::resource('/payments', PaymentController::class);
         Route::delete('/galleries/{roomGallery}', [RoomGalleryController::class, 'destroy'])->name('galleries.destroy');
     });
 });

@@ -88,6 +88,19 @@
                 </form>
             @endif
 
+            <!-- Reserve Button -->
+            @if ($reservation->status == 'pending')
+                <form action="{{ route('reservations.reserve', $reservation->id) }}" method="POST"
+                    class="inline-block mr-4">
+                    @csrf
+                    @method('PATCH')
+                    <button type="submit"
+                        class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500">
+                        Reserve
+                    </button>
+                </form>
+            @endif
+
             <!-- Apply Commission Button -->
             @if (!$reservation->is_commissioned)
                 <p class="text-gray-700 mt-2 me-3">

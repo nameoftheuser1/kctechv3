@@ -11,7 +11,7 @@ class Payment extends Model
 
     protected $fillable = [
         'reservation_id',
-        'gcash_number',
+        'reference_number',
         'amount',
     ];
 }

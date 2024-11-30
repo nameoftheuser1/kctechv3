@@ -16,7 +16,20 @@ class PaymentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index() {}
+    public function index(Request $request)
+    {
+        // Search functionality
+        $search = $request->get('search');
+        $payments = Payment::query()
+            ->when($search, function ($query) use ($search) {
+                $query->where('reference_number', 'like', "%{$search}%")
+                    ->orWhere('reservation_id', 'like', "%{$search}%");
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('payments.index', compact('payments'));
+    }
 
     /**
      * Show the form for creating a new resource.
