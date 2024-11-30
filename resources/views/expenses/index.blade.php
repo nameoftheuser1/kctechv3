@@ -14,14 +14,14 @@
                 <path stroke-linecap="round" stroke-linejoin="round"
                     d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
             </svg>
-            Add Expense
+            Add loss
         </a>
     </div>
 
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
         <caption class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white">
-            Expenses
-            <p class="mt-1 text-sm font-normal text-gray-500">Browse a list of available expenses in our system.</p>
+            Loss
+            <p class="mt-1 text-sm font-normal text-gray-500">Browse a list of losses in our system.</p>
 
             <form id="search-form">
                 <input type="text" name="search" id="search-input" placeholder="Search expenses..."
