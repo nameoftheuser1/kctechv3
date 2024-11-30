@@ -15,7 +15,7 @@ class HomeController extends Controller
 
     public function roomList()
     {
-        $rooms = Room::all();
+        $rooms = Room::all()->sortBy('room_number');  // Sort rooms by room_number
         $roomGalleries = RoomGallery::all();
 
         // Map rooms to their corresponding gallery based on matching `room_number` and `name`
