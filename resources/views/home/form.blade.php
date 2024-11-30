@@ -153,6 +153,11 @@
         </form>
     </div>
 
+    <div id="loading-overlay"
+        class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="w-12 h-12 border-4 border-t-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
+    </div>
+
     <div id="spinner" class="flex justify-center items-center hidden">
         <div class="w-8 h-8 border-4 border-t-4 border-gray-300 border-t-pink-500 rounded-full animate-spin"></div>
     </div>
@@ -172,6 +177,7 @@
             const confirmationModal = document.getElementById('confirmation-modal');
             const confirmButton = document.getElementById('confirm-button');
             const cancelButton = document.getElementById('cancel-button');
+            const loadingOverlay = document.getElementById('loading-overlay'); // Overlay spinner
 
             checkAvailabilityButton.addEventListener('click', function() {
                 const checkInDate = checkInInput.value;
@@ -207,9 +213,9 @@
                                 const roomDiv = document.createElement('div');
                                 roomDiv.classList.add('room-item', 'flex', 'items-center');
                                 roomDiv.innerHTML = `
-                        <input type="checkbox" name="rooms[]" value="${room.id}" data-price="${room.price}" class="mr-2 room-checkbox">
-                        <label class="text-gray-600 text-sm">${room.room_number} - ${room.room_type} - pax(${room.pax}) - ₱${room.price}</label>
-                    `;
+                            <input type="checkbox" name="rooms[]" value="${room.id}" data-price="${room.price}" class="mr-2 room-checkbox">
+                            <label class="text-gray-600 text-sm">${room.room_number} - ${room.room_type} - pax(${room.pax}) - ₱${room.price}</label>
+                        `;
                                 roomContainer.appendChild(roomDiv);
                             });
 
@@ -226,7 +232,6 @@
                         console.error('Error fetching available rooms:', error);
                     });
             }
-
 
             function updateTotalAmount() {
                 let total = 0;
@@ -245,8 +250,8 @@
 
             confirmButton.addEventListener('click', function() {
                 confirmationModal.classList.add('hidden');
-                document.getElementById('check-in-form')
-                    .submit();
+                loadingOverlay.classList.remove('hidden'); // Show loading overlay
+                document.getElementById('check-in-form').submit();
             });
 
             cancelButton.addEventListener('click', function() {
