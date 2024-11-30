@@ -2,7 +2,7 @@
     <div class="w-full bg-white fixed top-0 left-0 right-0 z-50">
         <div class="container mx-auto px-4 sm:px-10">
             <div class="flex justify-between items-center h-[100px]">
-                <p class="font-bold font-mono text-[20px] text-gray-800 sm:text-[30px]">Kandahar Resort</p>
+                <p class="font-bold font-mono text-[20px] text-gray-800 sm:text-[30px]">Kandahar Cottages</p>
                 <button id="menuButton" class="sm:hidden p-2 z-20">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
