@@ -41,7 +41,7 @@ class DashboardController extends Controller
             ->sum('commission_amount') ?? 0;
 
         // Predict sales for the next 6 months
-        $historicalData = $this->getHistoricalSalesData(5); // Historical sales for 5 months
+        $historicalData = $this->getHistoricalSalesData(6); // Historical sales for 5 months
         $predictedSales = $this->predictSales($predictSalesMonth); // Predicted sales for next N months
 
         // Combine both arrays
@@ -161,6 +161,7 @@ class DashboardController extends Controller
             $date = Carbon::now()->subMonths($i);
             $revenue = Reservation::whereMonth('check_in', $date->month)
                 ->whereYear('check_in', $date->year)
+                ->where('status', 'check out') // Filter by status "check out"
                 ->sum('total_amount') ?? 0;
 
             $data[] = [
