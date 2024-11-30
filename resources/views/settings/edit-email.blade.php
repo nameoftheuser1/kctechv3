@@ -25,6 +25,15 @@
             </ol>
         </nav>
 
+        <!-- Explanation Section -->
+        <div class="bg-yellow-100 text-yellow-800 border border-yellow-300 rounded-lg p-4 mb-4">
+            <p>
+                <strong>Note:</strong> This email address will be used to receive notifications about reservations and
+                payment updates for bookings.
+                Make sure to provide a valid and active email address to stay informed.
+            </p>
+        </div>
+
         <!-- Edit Email Form -->
         <div class="bg-white shadow-md rounded-lg p-6">
             <form action="{{ route('settings.updateEmail') }}" method="POST">
