@@ -10,6 +10,18 @@
         <p class="text-sm text-slate-500">
             Additionally, a GCash number is required to confirm your downpayment.
         </p>
+
+        @if ($errors->any())
+            <div class="mb-4 p-4 border rounded-lg bg-red-50 text-red-700">
+                <h2 class="font-bold text-lg mb-2">There were some errors with your submission:</h2>
+                <ul class="list-disc pl-5">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <form action="{{ route('user-form.store') }}" method="POST" id="check-in-form"
             class="flex flex-col w-full justify-center">
             @csrf
