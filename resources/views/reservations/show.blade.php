@@ -54,7 +54,7 @@
                     @if ($salesReportsTotal > 0)
                         ₱{{ number_format($salesReportsTotal, 2) }}
                     @else
-                        No additional includes
+                        No additional included
                     @endif
                 </p>
             </div>
@@ -121,7 +121,7 @@
                 class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 me-2 ">
                 View Receipt
             </a>
-            @if (!in_array($reservation->status, ['check in', 'check out']))
+            @if (!in_array($reservation->status, ['check in', 'check out' , 'cancel']))
                 <a href="{{ route('reservations.edit', $reservation->id) }}"
                     class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                     Edit Reservation

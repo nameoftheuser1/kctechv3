@@ -37,7 +37,7 @@
                 @endphp
 
                 @if ($salesReportsTotal > 0)
-                    <p><strong>Total Sales Report:</strong> ₱{{ number_format($salesReportsTotal, 2) }}</p>
+                    <p><strong>Total Additional:</strong> ₱{{ number_format($salesReportsTotal, 2) }}</p>
                 @endif
 
                 <p class="text-lg font-bold"><strong>Total Amount:</strong>
