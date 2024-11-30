@@ -46,7 +46,7 @@
 
             <!-- Sales Report Section -->
             <div>
-                <p class="text-gray-700 font-bold mb-2 text-sm">Sales Report</p>
+                <p class="text-gray-700 font-bold mb-2 text-sm">Additional Charge</p>
                 <p class="text-gray-600 text-base">
                     @php
                         $salesReportsTotal = $reservation->salesReports->sum('amount');
@@ -54,12 +54,12 @@
                     @if ($salesReportsTotal > 0)
                         ₱{{ number_format($salesReportsTotal, 2) }}
                     @else
-                        No sales report available
+                        No additional includes
                     @endif
                 </p>
             </div>
             <div>
-                <p class="text-gray-700 font-bold mb-2 text-sm">Total Amount (Including Sales Reports)</p>
+                <p class="text-gray-700 font-bold mb-2 text-sm">Total Amount (Including Additional Charges)</p>
                 <p class="text-gray-600 text-base">
                     @php
                         $salesReportsTotal = $reservation->salesReports->sum('amount');
