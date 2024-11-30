@@ -61,7 +61,7 @@ class PaymentController extends Controller
         }
 
         // Change the reservation status to 'reserved'
-        $reservation->status = 'reserved';
+        $reservation->status = 'pending';
         $reservation->save();
 
         // Create the payment
