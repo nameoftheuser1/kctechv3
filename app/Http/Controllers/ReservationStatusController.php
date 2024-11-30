@@ -38,11 +38,20 @@ class ReservationStatusController extends Controller
         $reservation = Reservation::find($reservationId);
 
         if ($reservation) {
+            // Detach all associated rooms
+            $reservation->rooms()->detach();
+
+            // Reset the total amount to 0
+            $reservation->total_amount = 0;
+
+            // Update the reservation status to 'cancel'
             $reservation->status = 'cancel';
+
+            // Save the reservation
             $reservation->save();
         }
 
-        return redirect()->route('reservations.index')->with('success', 'Reservation canceled.');
+        return redirect()->route('reservations.index')->with('success', 'Reservation canceled and rooms removed.');
     }
 
     /**
