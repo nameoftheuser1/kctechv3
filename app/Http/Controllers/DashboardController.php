@@ -159,7 +159,6 @@ class DashboardController extends Controller
     {
         $data = [];
         $now = Carbon::now();
-
         for ($i = $months - 1; $i >= 0; $i--) {
             $date = $now->copy()->subMonths($i);
             $reservations = Reservation::whereMonth('check_in', $date->month)
@@ -168,15 +167,20 @@ class DashboardController extends Controller
 
             $revenue = $reservations->sum('total_amount');
 
-            // Debug line
-            Log::info("Month: {$date->format('F Y')}, Reservations: {$reservations->count()}, Revenue: $revenue");
+            // Calculate additional revenue from sales reports
+            $salesReportRevenue = $reservations->sum(function ($reservation) {
+                return $reservation->salesReports->sum('amount');
+            });
+
+            // Total revenue is the sum of reservation total_amount and sales report amounts
+            $totalRevenue = $revenue + $salesReportRevenue;
+
 
             $data[] = [
                 'month' => $date->format('F Y'),
-                'revenue' => $revenue ?: 0,
+                'revenue' => $totalRevenue ?: 0,
             ];
         }
-
         return $data;
     }
 
