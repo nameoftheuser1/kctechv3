@@ -25,17 +25,6 @@ class UserReservationController extends Controller
 
     public function store(Request $request)
     {
-        $key = 'reservation-' . $request->ip();
-        $maxAttempts = 1; // Allow only 1 attempt
-        $decayMinutes = 5; // Block subsequent requests for 5 minutes
-
-        if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
-            return back()->with('error', 'Too many attempts. Please try again after 5 minutes.');
-        }
-
-        // Increment the rate limiter
-        RateLimiter::hit($key, $decayMinutes * 60);
-
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',

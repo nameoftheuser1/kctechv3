@@ -4,9 +4,7 @@
         <h1 class="text-3xl font-bold text-slate-700 mt-4">Booking</h1>
         <p class="text-sm text-slate-500 mb-6">Add booking details</p>
         <p class="text-sm text-slate-500 mb-4">
-            Please note that this reservation requires approval from the receptionist. After making a request, a
-            5-minutes
-            wait is needed before reattempting.
+            Please note that this reservation requires approval from the receptionist.
         </p>
         <p class="text-sm text-slate-500 mt-4">
             <strong>Note:</strong> Day tours are available daily from 6:00 AM to 6:00 PM only. For overnight stays, the
