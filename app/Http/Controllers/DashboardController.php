@@ -7,6 +7,7 @@ use App\Models\Expense;
 use App\Models\Reservation;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Phpml\Regression\LeastSquares;
 
 class DashboardController extends Controller
@@ -154,21 +155,25 @@ class DashboardController extends Controller
      * @param int $months
      * @return array
      */
-    private function getHistoricalSalesData(int $months): array
+    public function getHistoricalSalesData(int $months): array
     {
         $data = [];
         $now = Carbon::now();
 
         for ($i = $months - 1; $i >= 0; $i--) {
             $date = $now->copy()->subMonths($i);
-            $revenue = Reservation::whereMonth('check_in', $date->month)
+            $reservations = Reservation::whereMonth('check_in', $date->month)
                 ->whereYear('check_in', $date->year)
-                ->where('status', 'check out') // Only "check out" reservations
-                ->sum('total_amount');
+                ->get();
+
+            $revenue = $reservations->sum('total_amount');
+
+            // Debug line
+            Log::info("Month: {$date->format('F Y')}, Reservations: {$reservations->count()}, Revenue: $revenue");
 
             $data[] = [
                 'month' => $date->format('F Y'),
-                'revenue' => $revenue ?: 0, // Default to 0 if no revenue found
+                'revenue' => $revenue ?: 0,
             ];
         }
 
