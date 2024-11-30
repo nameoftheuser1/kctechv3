@@ -1,9 +1,9 @@
 <x-admin-layout>
     <div class="container mx-auto px-4 py-8 w-full sm:w-1/2 border rounded-lg bg-white mt-0 sm:mt-10">
-        <a href="{{ route('sales-reports.index') }}" class="text-blue-500 text-sm underline">&larr; back to sales reports
+        <a href="{{ route('sales-reports.index') }}" class="text-blue-500 text-sm underline">&larr; back to additions
             list</a>
-        <h1 class="text-3xl font-bold text-slate-700 mt-4">Create New Sales Report</h1>
-        <p class="text-sm text-slate-500 mb-6">Add sales report details</p>
+        <h1 class="text-3xl font-bold text-slate-700 mt-4">Create New addition</h1>
+        <p class="text-sm text-slate-500 mb-6">Add addition details</p>
         <form action="{{ route('sales-reports.store') }}" method="POST" class="flex flex-col w-full justify-center">
             @csrf
             <div class="mb-4 w-full">
@@ -36,7 +36,7 @@
             <div>
                 <button type="submit"
                     class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-                    Create Sales Report
+                    Create additional
                 </button>
             </div>
         </form>

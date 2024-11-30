@@ -31,8 +31,31 @@ class UserReservationController extends Controller
             'pax' => 'required|integer|min:1',
             'contact' => 'required|string|max:50',
             'car_unit_plate_number' => 'nullable|string|max:255',
-            'check_in' => 'required|date',
-            'check_out' => 'required|date|after:check_in',
+            'check_in' => [
+                'required',
+                'date',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->stay_type === 'day_tour') {
+                        $hour = date('H', strtotime($value));
+                        if ($hour < 6 || $hour >= 18) {
+                            $fail('The check-in time for day tours must be between 6:00 AM and 6:00 PM.');
+                        }
+                    }
+                },
+            ],
+            'check_out' => [
+                'required',
+                'date',
+                'after:check_in',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->stay_type === 'day_tour') {
+                        $hour = date('H', strtotime($value));
+                        if ($hour < 6 || $hour > 18) {
+                            $fail('The check-out time for day tours must be between 6:00 AM and 6:00 PM.');
+                        }
+                    }
+                },
+            ],
             'rooms' => 'required|array',
             'rooms.*' => 'exists:rooms,id',
             'total_amount' => 'required|numeric|min:0',
@@ -60,7 +83,7 @@ class UserReservationController extends Controller
                 'check_out' => $request->check_out,
                 'total_amount' => $request->total_amount,
                 'status' => 'pending',
-                'down_payment' => $request->down_payment
+                'down_payment' => $request->down_payment,
             ]);
 
             // Attach rooms to reservation

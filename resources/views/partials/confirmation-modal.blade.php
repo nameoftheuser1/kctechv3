@@ -1,5 +1,5 @@
 <div id="confirmation-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-11/12 sm:w-1/2">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-11/12 sm:w-1/2 max-h-[90vh] overflow-y-auto">
         <h2 class="text-xl font-bold mb-4 text-center">RULES AND REGULATIONS</h2>
         <p class="mb-4">Please read and accept the following rules and regulations before proceeding:</p>
 

@@ -8,10 +8,9 @@
     </div>
 
     <div class="container mx-auto px-4 py-8 w-full sm:w-1/2 border rounded-lg bg-white mt-0 sm:mt-10">
-        <a href="{{ route('sales-reports.index') }}" class="text-blue-500 text-sm underline">&larr; back to sales
-            reports</a>
-        <h1 class="text-3xl font-bold text-slate-700 mt-4">Edit Sales Report</h1>
-        <p class="text-sm text-slate-500 mb-6">Edit the details of the selected sales report</p>
+        <a href="{{ route('sales-reports.index') }}" class="text-blue-500 text-sm underline">&larr; back to additions</a>
+        <h1 class="text-3xl font-bold text-slate-700 mt-4">Edit addition</h1>
+        <p class="text-sm text-slate-500 mb-6">Edit the details of the selected addition</p>
 
         <form action="{{ route('sales-reports.update', $salesReport) }}" method="POST"
             class="flex flex-col w-full justify-center">
@@ -49,7 +48,7 @@
             <div>
                 <button type="submit"
                     class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-                    Update Sales Report
+                    Update additional
                 </button>
             </div>
         </form>

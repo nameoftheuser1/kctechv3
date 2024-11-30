@@ -1,6 +1,6 @@
 <x-layout>
     <div class="container mx-auto px-4 py-8 w-full sm:w-1/2 border rounded-lg bg-white mt-0 sm:mt-10">
-        <a href="{{ route('room-list') }}" class="text-blue-500 text-sm underline">&larr; back to reservation list</a>
+        <a href="{{ route('room-list') }}" class="text-blue-500 text-sm underline">&larr; back to room list</a>
         <h1 class="text-3xl font-bold text-slate-700 mt-4">Booking</h1>
         <p class="text-sm text-slate-500 mb-6">Add booking details</p>
         <p class="text-sm text-slate-500 mb-4">
@@ -54,6 +54,8 @@
                         value="{{ old($field, request($field)) }}"
                         class="w-full text-gray-600 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
                         required>
+                    <p class="text-sm text-gray-500 mt-1">Note: Reservations for day tours can only be made between 6:00
+                        AM and 6:00 PM.</p>
                 </div>
 
                 @error($field)
