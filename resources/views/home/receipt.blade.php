@@ -8,11 +8,12 @@
             <input type="hidden" name="reservation" value="{{ $reservation->id }}">
 
             <div class="mb-4 w-full">
-                <label for="gcash_number" class="block text-gray-700 font-bold mb-2 text-sm">GCash Number</label>
-                <input type="text" id="gcash_number" name="gcash_number"
+                <label for="reference_number" class="block text-gray-700 font-bold mb-2 text-sm">Reference
+                    Number</label>
+                <input type="text" id="reference_number" name="reference_number"
                     class="w-full text-gray-600 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
-                    placeholder="Enter GCash number" required>
-                @error('gcash_number')
+                    placeholder="Enter reference number" required>
+                @error('reference_number')
                     <p class="text-sm text-red-600 mb-4">{{ $message }}</p>
                 @enderror
             </div>

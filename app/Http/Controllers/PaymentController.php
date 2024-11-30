@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Payment;
 use App\Http\Requests\StorePaymentRequest;
 use App\Http\Requests\UpdatePaymentRequest;
+use App\Mail\PaymentReceived;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class PaymentController extends Controller
 {
@@ -30,15 +33,15 @@ class PaymentController extends Controller
     {
         $fields = $request->validate([
             'reservation' => 'required|exists:reservations,id',
-            'gcash_number' => 'required|numeric|min:0',
+            'reference_number' => 'required|numeric|min:0',
             'amount' => 'required|numeric|min:0',
         ]);
 
         $reservation = Reservation::findOrFail($request->reservation);
 
-        // Validate the GCash number and amount
-        if ($reservation->contact != $request->gcash_number || $reservation->down_payment != $request->amount) {
-            return back()->with('error', 'The GCash number or down payment amount does not match this booking. Please ensure that the GCash number and amount match the contact number and down payment in your reservation.');
+        // Validate the reference number and amount
+        if ($reservation->down_payment != $request->amount) {
+            return back()->with('error', 'The reference number or down payment amount does not match this booking. Please ensure that the reference number and amount match the contact number and down payment in your reservation.');
         }
 
         // Change the reservation status to 'reserved'
@@ -48,9 +51,15 @@ class PaymentController extends Controller
         // Create the payment
         Payment::create([
             'reservation_id' => $reservation->id,
-            'gcash_number' => $fields['gcash_number'],
+            'reference_number' => $fields['reference_number'],
             'amount' => $fields['amount'],
         ]);
+
+        // Get the admin's email
+        $adminEmail = DB::table('settings')->where('key', 'email')->value('value');
+
+        // Send an email to the admin
+        Mail::to($adminEmail)->send(new PaymentReceived($reservation));
 
         return redirect()->route('home.thankyou')->with('success', 'Thank you! Your payment has been received, and your booking is now reserved.');
     }

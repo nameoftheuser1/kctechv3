@@ -22,6 +22,7 @@
                     'contact' =>
                         'Enter G-cash number (This contact number should be the number that will pay the downpayment)',
                     'car_unit_plate_number' => 'Enter car unit plate number (Optional, only if)',
+                    'email' => 'Enter your email address',
                 ];
             @endphp
 
@@ -136,6 +137,10 @@
                 Check in
             </button>
         </form>
+    </div>
+
+    <div id="spinner" class="flex justify-center items-center hidden">
+        <div class="w-8 h-8 border-4 border-t-4 border-gray-300 border-t-pink-500 rounded-full animate-spin"></div>
     </div>
 
     @include('partials.confirmation-modal')

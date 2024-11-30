@@ -12,10 +12,10 @@
             <p class="text-gray-600 mb-4">
                 Your reservation has been successfully submitted. We'll notify you with further updates.
             </p>
-            {{-- <p class="text-gray-600 mb-4">
+            <p class="text-gray-600 mb-4">
                 For questions or concerns, feel free to contact us at
-                <a href="mailto:info@bigbrew.me" class="text-blue-500 underline">Kandahar.on</a>.
-            </p> --}}
+                <a href="mailto:kandahar365@gmail.com" class="text-blue-500 underline">Kandahar.on</a>.
+            </p>
             <a href="{{ route('home') }}"
                 class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600">
                 Back to Home
