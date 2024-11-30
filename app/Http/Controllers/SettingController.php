@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -18,6 +19,12 @@ class SettingController extends Controller
     public function changePassword()
     {
         return view('settings.password');
+    }
+
+    public function editEmail()
+    {
+        $emailSetting = Setting::where('key', 'email')->first();
+        return view('settings.edit-email', compact('emailSetting'));
     }
 
     public function updatePassword(Request $request)
