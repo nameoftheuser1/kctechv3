@@ -1,7 +1,7 @@
 <x-layout>
     <x-navbar />
     <div
-        class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-[60svh] flex justify-center items-center text-white">
+        class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-[60svh] flex justify-center items-center text-white pt-[100px]">
         <div class="w-[750px] text-center">
             <span class="text-[60px] font-semibold">Relax and unwind at Kandahar Resort</span>
             <div class="mb-10">Experience comfort and luxury with hassle-free reservations. Your getaway awaits!
@@ -23,7 +23,10 @@
                     <h1 class="text-blue-900 text-[50px]">
                         {{-- {{ $reservationCount }} --}}
                     </h1>
-                    <p class="text-sm text-gray-700">Book now</p>
+                    <a href="{{ route('room-list') }}">
+                        <p class="text-sm text-gray-700 cursor-pointer">Book now</p>
+                    </a>
+
                 </div>
 
             </div>
