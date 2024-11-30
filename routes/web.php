@@ -27,7 +27,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/user-form', [UserReservationController::class, 'create'])->name('user-form');
 Route::post('/user-form', [UserReservationController::class, 'store'])->name('user-form.store');
 Route::post('/user-form/check-availability', [UserReservationController::class, 'checkAvailability'])->name('user-form.checkAvailability');
-Route::get('/user-form/receipt/{id}', [UserReservationController::class, 'receipt'])->name('user-form.receipt');
+Route::get('/user-form/payment/{id}', [UserReservationController::class, 'payment'])->name('user-form.payment');
 Route::post('/user-form/receipt', [PaymentController::class, 'store'])->name('payments.store');
 Route::get('/thank-you', [PaymentController::class, 'thankYou'])->name('home.thankyou');
 

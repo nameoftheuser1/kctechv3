@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ReservationNotification;
 use App\Models\Reservation;
 use App\Models\Room;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class UserReservationController extends Controller
 {
@@ -24,6 +26,7 @@ class UserReservationController extends Controller
     {
         $rules = [
             'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
             'address' => 'required|string|max:255',
             'pax' => 'required|integer|min:1',
             'contact' => 'required|string|max:50',
@@ -37,6 +40,7 @@ class UserReservationController extends Controller
         ];
 
         $request->validate($rules);
+
         try {
             $expected_down_payment = (int)($request->total_amount * 0.20);
 
@@ -47,6 +51,7 @@ class UserReservationController extends Controller
             // Create reservation
             $reservation = Reservation::create([
                 'name' => $request->name,
+                'email' => $request->email,
                 'address' => $request->address,
                 'pax' => $request->pax,
                 'contact' => $request->contact,
@@ -61,10 +66,14 @@ class UserReservationController extends Controller
             // Attach rooms to reservation
             $reservation->rooms()->attach($request->rooms);
 
-            return redirect()->route('user-form.receipt', [
-                'id' => $reservation->id,
-                'down_payment' => $request->down_payment
-            ])->with('success', 'Reservation created successfully.');
+            // Retrieve admin email from settings
+            $adminEmail = DB::table('settings')->where('key', 'email')->value('value');
+
+            // Send email to admin and user
+            Mail::to($adminEmail)->send(new ReservationNotification($reservation, 'admin'));
+            Mail::to($request->email)->send(new ReservationNotification($reservation, 'user'));
+
+            return redirect()->route('home.thankyou')->with('success', 'Reservation created successfully.');
         } catch (Exception $e) {
             Log::error('Error creating reservation', [
                 'error_message' => $e->getMessage(),
@@ -108,9 +117,13 @@ class UserReservationController extends Controller
         }
     }
 
-    public function receipt($id)
+    public function payment($id)
     {
         $reservation = Reservation::findOrFail($id);
-        return view('home.receipt', compact('reservation'));
+
+        // Pass down_payment to the view
+        $downPayment = $reservation->down_payment;
+
+        return view('home.receipt', compact('reservation', 'downPayment'));
     }
 }
