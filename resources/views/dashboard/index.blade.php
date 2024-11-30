@@ -33,7 +33,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600">Total Loss</p>
-                        <h3 class="text-2xl font-bold text-red-600 mt-1">₱{{ number_format($totalExpenses, 2) }}</h3>
+                        <h3 class="text-2xl font-bold text-red-600 mt-1">₱{{ number_format($totalLoss, 2) }}</h3>
                         <p class="text-sm font-medium text-gray-600">
                             This data covers the period {{ $totalExpensesYear }}.
                         </p>

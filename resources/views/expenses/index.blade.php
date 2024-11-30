@@ -51,17 +51,22 @@
                             <td class="px-6 py-4">₱{{ number_format($expense->amount, 2) }}</td>
                             <td class="px-6 py-4">{{ $expense->date_time->format('Y-m-d H:i:s') }}</td>
                             <td class="px-6 py-4 text-right">
-                                <a href="{{ route('expenses.edit', $expense) }}"
-                                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                                <button class="text-red-600 hover:underline ml-2"
-                                    onclick="showConfirmationModal('Are you sure you want to delete this expense?', 'delete-form-{{ $expense->id }}')">
-                                    Delete
-                                </button>
-                                <form id="delete-form-{{ $expense->id }}"
-                                    action="{{ route('expenses.destroy', $expense) }}" method="POST" style="display: none;">
-                                    @csrf
-                                    @method('DELETE')
-                                </form>
+                                @if (str_starts_with($expense->expense_description, 'Commission'))
+                                    <span class="text-gray-500">Non-editable</span>
+                                @else
+                                    <a href="{{ route('expenses.edit', $expense) }}"
+                                        class="font-medium text-blue-600 hover:underline">Edit</a>
+                                    <button class="text-red-600 hover:underline ml-2"
+                                        onclick="showConfirmationModal('Are you sure you want to delete this expense?', 'delete-form-{{ $expense->id }}')">
+                                        Delete
+                                    </button>
+                                    <form id="delete-form-{{ $expense->id }}"
+                                        action="{{ route('expenses.destroy', $expense) }}" method="POST"
+                                        style="display: none;">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                     @endforeach
@@ -76,16 +81,22 @@
                     <p><strong>Amount:</strong> ₱{{ number_format($expense->amount, 2) }}</p>
                     <p><strong>Date & Time:</strong> {{ $expense->date_time->format('Y-m-d H:i:s') }}</p>
                     <div class="mt-2">
-                        <a href="{{ route('expenses.edit', $expense) }}" class="text-blue-600 hover:underline">Edit</a>
-                        <button class="text-red-600 hover:underline ml-2"
-                            onclick="confirmDelete('delete-form-{{ $expense->id }}', 'expense')">
-                            Delete
-                        </button>
-                        <form id="delete-form-{{ $expense->id }}" action="{{ route('expenses.destroy', $expense) }}"
-                            method="POST" style="display: none;">
-                            @csrf
-                            @method('DELETE')
-                        </form>
+                        @if (str_starts_with($expense->expense_description, 'Commission'))
+                            <span class="text-gray-500">Non-editable</span>
+                        @else
+                            <a href="{{ route('expenses.edit', $expense) }}"
+                                class="text-blue-600 hover:underline">Edit</a>
+                            <button class="text-red-600 hover:underline ml-2"
+                                onclick="confirmDelete('delete-form-{{ $expense->id }}', 'expense')">
+                                Delete
+                            </button>
+                            <form id="delete-form-{{ $expense->id }}"
+                                action="{{ route('expenses.destroy', $expense) }}" method="POST"
+                                style="display: none;">
+                                @csrf
+                                @method('DELETE')
+                            </form>
+                        @endif
                     </div>
                 </div>
             @endforeach

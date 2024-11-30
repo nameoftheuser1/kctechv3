@@ -54,6 +54,7 @@ class DashboardController extends Controller
         // Predict reservation counts for the next 6 months
         $predictedReservations = $this->predictReservations($predictReservationsMonth);
 
+        $totalLoss = $totalExpenses + $totalSalaries;
         // Calculate the loss vs income
         $overallLossVsIncome = $totalRevenue - ($totalExpenses + $totalSalaries);
 
@@ -61,6 +62,7 @@ class DashboardController extends Controller
             'totalRevenueYear' => $totalRevenueYear,
             'totalExpensesYear' => $totalExpensesYear,
             'totalSalariesYear' => $totalSalariesYear,
+            'totalLoss' => $totalLoss,
             'currentYear' => $currentYear,
             'totalRevenue' => $totalRevenue,
             'totalExpenses' => $totalExpenses,
