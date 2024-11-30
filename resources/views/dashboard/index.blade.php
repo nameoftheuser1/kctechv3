@@ -70,6 +70,11 @@
                         </svg>
                     </div>
                 </div>
+                <!-- Note about the color coding -->
+                <p class="mt-4 text-sm text-gray-500">
+                    <span class="text-red-600 font-bold">Red</span> indicates a negative value or loss, while
+                    <span class="text-green-600 font-bold">Green</span> indicates a positive value or gain.
+                </p>
             </div>
         </div>
 
@@ -163,14 +168,14 @@
 
                             // Create gradient for distinguishing actual and predicted sales
                             const gradient = ctx.createLinearGradient(0, 0, ctx.canvas.width,
-                            0);
+                                0);
                             const totalDataPoints = combinedSales.length;
                             const actualSalesCount = totalDataPoints -
-                            3; // Last 3 months are for predicted sales
+                                3; // Last 3 months are for predicted sales
 
                             // Blue for actual sales, transitioning to red for predicted sales
                             gradient.addColorStop(0,
-                            'rgba(34, 197, 94, 1)'); // Actual sales color
+                                'rgba(34, 197, 94, 1)'); // Actual sales color
                             gradient.addColorStop(actualSalesCount / totalDataPoints,
                                 'rgba(34, 197, 94, 1)');
                             gradient.addColorStop(actualSalesCount / totalDataPoints,
@@ -198,7 +203,7 @@
                                 label: function(context) {
                                     const sale = combinedSales[context.dataIndex];
                                     const isPredicted = context.dataIndex >= (combinedSales.length -
-                                    3); // Last 3 months are predicted
+                                        3); // Last 3 months are predicted
                                     const type = isPredicted ? 'Predicted Sales' : 'Actual Sales';
                                     return `${type}: ₱${context.raw.toLocaleString()}`;
                                 }
