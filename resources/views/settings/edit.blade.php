@@ -77,7 +77,7 @@
                     @enderror
                 </div>
 
-                <div class="mb-4">
+                {{-- <div class="mb-4">
                     <label for="predict_sales_month" class="block text-gray-700 font-semibold mb-2">Predict Sales
                         Month</label>
                     <input type="number" id="predict_sales_month" name="predict_sales_month"
@@ -87,7 +87,7 @@
                     @error('predict_sales_month')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
-                </div>
+                </div> --}}
 
                 <div class="mb-4">
                     <label for="historical_sales_data" class="block text-gray-700 font-semibold mb-2">Historical Sales
