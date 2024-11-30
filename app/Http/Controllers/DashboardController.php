@@ -154,21 +154,24 @@ class DashboardController extends Controller
      * @param int $months
      * @return array
      */
-    private function getHistoricalSalesData($months)
+    private function getHistoricalSalesData(int $months): array
     {
         $data = [];
+        $now = Carbon::now();
+
         for ($i = $months - 1; $i >= 0; $i--) {
-            $date = Carbon::now()->subMonths($i);
+            $date = $now->copy()->subMonths($i);
             $revenue = Reservation::whereMonth('check_in', $date->month)
                 ->whereYear('check_in', $date->year)
-                ->where('status', 'check out') // Filter by status "check out"
-                ->sum('total_amount') ?? 0;
+                ->where('status', 'check out') // Only "check out" reservations
+                ->sum('total_amount');
 
             $data[] = [
                 'month' => $date->format('F Y'),
-                'revenue' => $revenue,
+                'revenue' => $revenue ?: 0, // Default to 0 if no revenue found
             ];
         }
+
         return $data;
     }
 
