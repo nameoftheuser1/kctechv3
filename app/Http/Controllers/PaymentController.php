@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Payment;
-use App\Http\Requests\StorePaymentRequest;
-use App\Http\Requests\UpdatePaymentRequest;
 use App\Mail\PaymentReceived;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
@@ -62,7 +60,7 @@ class PaymentController extends Controller
         $reservation->save();
 
         // Create the payment
-        Payment::create([
+        $payment = Payment::create([
             'reservation_id' => $reservation->id,
             'reference_number' => $fields['reference_number'],
             'amount' => $fields['amount'],
@@ -72,7 +70,7 @@ class PaymentController extends Controller
         $adminEmail = DB::table('settings')->where('key', 'email')->value('value');
 
         // Send an email to the admin
-        Mail::to($adminEmail)->send(new PaymentReceived($reservation));
+        Mail::to($adminEmail)->send(new PaymentReceived($reservation, $payment));
 
         return redirect()->route('home.thankyou')->with('success', 'Thank you! Your payment has been received, and your booking is now reserved.');
     }

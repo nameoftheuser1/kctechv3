@@ -13,16 +13,19 @@ class PaymentReceived extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $reservation; // Property to hold the reservation data
+    public $reservation; // Reservation data
+    public $payment; // Payment data
 
     /**
      * Create a new message instance.
      *
      * @param $reservation
+     * @param $payment
      */
-    public function __construct($reservation)
+    public function __construct($reservation, $payment)
     {
-        $this->reservation = $reservation; // Store the reservation data for use in the email view
+        $this->reservation = $reservation;
+        $this->payment = $payment;
     }
 
     /**
@@ -31,7 +34,7 @@ class PaymentReceived extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Payment Received', // Subject of the email
+            subject: 'Payment Received',
         );
     }
 
@@ -41,9 +44,10 @@ class PaymentReceived extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.payment_received', // The view to render for the email
+            view: 'emails.payment_received',
             with: [
-                'reservation' => $this->reservation, // Pass the reservation data to the email view
+                'reservation' => $this->reservation,
+                'payment' => $this->payment,
             ],
         );
     }
