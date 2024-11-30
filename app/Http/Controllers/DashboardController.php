@@ -26,7 +26,7 @@ class DashboardController extends Controller
 
         // Total revenue for the specified year (show 0 if null)
         $totalRevenue = Reservation::whereYear('created_at', $totalRevenueYear)
-            ->where('status', 'check_out')
+            ->where('status', 'check out')
             ->sum('total_amount') ?? 0;
 
         // Total expenses for the specified year (show 0 if null)
