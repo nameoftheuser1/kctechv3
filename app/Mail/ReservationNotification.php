@@ -49,7 +49,10 @@ class ReservationNotification extends Mailable
 
         return new Content(
             view: $viewName,
-            with: ['reservation' => $this->reservation]
+            with: [
+                'reservation' => $this->reservation,
+                'rooms' => $this->reservation->rooms
+            ]
         );
     }
 

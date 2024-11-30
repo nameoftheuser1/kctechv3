@@ -9,6 +9,14 @@
 <p><strong>Total Amount:</strong> {{ number_format($reservation->total_amount, 2) }}</p>
 <p><strong>Down Payment:</strong> {{ number_format($reservation->down_payment, 2) }}</p>
 
+
+<h2>Selected Rooms</h2>
+<ul>
+    @foreach ($rooms as $room)
+        <li>Room Number: {{ $room->room_number }}, Type: {{ $room->room_type }}</li>
+    @endforeach
+</ul>
+
 <p>To complete your reservation, please proceed with the down payment.</p>
 
 <p><a href="{{ route('user-form.payment', ['id' => $reservation->id, 'down_payment' => $reservation->down_payment]) }}"

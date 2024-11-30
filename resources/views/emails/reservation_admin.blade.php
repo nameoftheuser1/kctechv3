@@ -8,3 +8,10 @@
 <p><strong>Check-Out:</strong> {{ $reservation->check_out }}</p>
 <p><strong>Total Amount:</strong> {{ $reservation->total_amount }}</p>
 <p><strong>Down Payment:</strong> {{ $reservation->down_payment }}</p>
+
+<h2>Selected Rooms</h2>
+<ul>
+    @foreach ($rooms as $room)
+        <li>Room Number: {{ $room->room_number }}, Type: {{ $room->room_type }}</li>
+    @endforeach
+</ul>

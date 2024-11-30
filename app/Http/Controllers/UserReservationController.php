@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\RateLimiter;
 
 class UserReservationController extends Controller
 {
@@ -24,6 +25,17 @@ class UserReservationController extends Controller
 
     public function store(Request $request)
     {
+        $key = 'reservation-' . $request->ip();
+        $maxAttempts = 1; // Allow only 1 attempt
+        $decayMinutes = 5; // Block subsequent requests for 5 minutes
+
+        if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
+            return back()->with('error', 'Too many attempts. Please try again after 5 minutes.');
+        }
+
+        // Increment the rate limiter
+        RateLimiter::hit($key, $decayMinutes * 60);
+
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
@@ -88,6 +100,9 @@ class UserReservationController extends Controller
 
             // Attach rooms to reservation
             $reservation->rooms()->attach($request->rooms);
+
+            // Ensure rooms relationship is loaded
+            $reservation->load('rooms');
 
             // Retrieve admin email from settings
             $adminEmail = DB::table('settings')->where('key', 'email')->value('value');
