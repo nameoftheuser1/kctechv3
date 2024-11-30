@@ -29,7 +29,6 @@
                         <th scope="col" class="px-6 py-3">Reference Number</th>
                         <th scope="col" class="px-6 py-3">Amount</th>
                         <th scope="col" class="px-6 py-3">Created At</th>
-                        <th scope="col" class="px-6 py-3"><span class="sr-only">Actions</span></th>
                     </tr>
                 </thead>
                 <tbody id="payments-table-body">
@@ -44,20 +43,6 @@
                             <td class="px-6 py-4">{{ $payment->reference_number }}</td>
                             <td class="px-6 py-4">₱{{ number_format($payment->amount, 2) }}</td>
                             <td class="px-6 py-4">{{ $payment->created_at->format('Y-m-d H:i:s') }}</td>
-                            <td class="px-6 py-4 text-right">
-                                <a href="{{ route('payments.edit', $payment) }}"
-                                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                                <button class="text-red-600 hover:underline ml-2"
-                                    onclick="showConfirmationModal('Are you sure you want to delete this payment?', 'delete-form-{{ $payment->id }}')">
-                                    Delete
-                                </button>
-                                <form id="delete-form-{{ $payment->id }}"
-                                    action="{{ route('payments.destroy', $payment) }}" method="POST"
-                                    style="display: none;">
-                                    @csrf
-                                    @method('DELETE')
-                                </form>
-                            </td>
                         </tr>
                     @endforeach
                 </tbody>
