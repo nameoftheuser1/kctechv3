@@ -48,7 +48,7 @@
                 <h3 class="text-lg font-semibold text-gray-900">Rooms</h3>
                 <ul class="list-disc list-inside text-gray-700">
                     @foreach ($reservation->rooms as $room)
-                        <li>{{ $room->room_number }} - {{ $room->room_type }} ₱{{ number_format($room->price, 2) }} -
+                        <li>{{ $room->room_number }} - {{ $room->room_type }} -
                             {{ $room->stay_type }}</li>
                     @endforeach
                 </ul>
