@@ -21,8 +21,8 @@
             <div class="mb-4 w-full">
                 <label for="amount" class="block text-gray-700 font-bold mb-2 text-sm">Amount</label>
                 <input type="number" id="amount" name="amount" step="0.01"
-                    class="w-full text-gray-600 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
-                    placeholder="Enter amount" value="{{ request('down_payment', '') }}" required>
+                    class="w-full text-gray-600 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 cursor-not-allowed"
+                    placeholder="Enter amount" value="{{ request('down_payment', '') }}" required disabled>
                 @error('amount')
                     <p class="text-sm text-red-600 mb-4">{{ $message }}</p>
                 @enderror
