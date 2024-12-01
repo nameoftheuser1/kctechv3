@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Payment;
 use App\Mail\PaymentReceived;
 use App\Models\Reservation;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -72,7 +73,7 @@ class PaymentController extends Controller
         ]);
 
         // Get the admin's email
-        $adminEmail = Auth::check() && Auth::user()->role == 'admin' ? Auth::user()->email : null;
+        $adminEmail = User::where('role', 'admin')->value('email');
 
         // Send an email to the admin
         Mail::to($adminEmail)->send(new PaymentReceived($reservation, $payment));
