@@ -49,7 +49,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:admin'])->group(function () {
 
         Route::get('/settings/email/edit', [SettingController::class, 'editEmail'])->name('settings.editEmail');
-        Route::put('/settings/email/update', [SettingController::class, 'updateEmail'])->name('settings.updateEmail');
+        Route::put('/settings/email/edit', [SettingController::class, 'updateEmail'])->name('settings.updateEmail');
 
         Route::post('/reservations/{id}/apply-commission', [ReservationController::class, 'applyCommission'])->name('reservations.applyCommission');
         Route::put('/reservation/edit/{reservation}', [ReservationController::class, 'updateReservation'])->name('reservations.update.full');

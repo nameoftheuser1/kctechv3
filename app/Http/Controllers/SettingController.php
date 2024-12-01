@@ -58,7 +58,7 @@ class SettingController extends Controller
 
         $request->validate([
             'current_password' => ['required'],
-            'new_password' => ['required', 'min:8', 'confirmed'],
+            'new_password' => ['required', 'confirmed'],
         ]);
 
         if (!Hash::check($request->current_password, Auth::user()->password)) {
