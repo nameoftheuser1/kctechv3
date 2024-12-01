@@ -31,10 +31,37 @@
                 <p class="text-sm text-red-600 mb-4">{{ session('error') }}</p>
             @endif
 
-            <button type="submit"
+            <!-- Spinner -->
+            <div id="loading-spinner" class="hidden flex justify-center items-center mb-4">
+                <svg class="animate-spin h-6 w-6 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                        stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+                <span class="ml-2 text-blue-500">Processing...</span>
+            </div>
+
+            <button type="submit" id="submit-button"
                 class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase">
                 Submit Payment
             </button>
         </form>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('reservation-receipt-form');
+            const spinner = document.getElementById('loading-spinner');
+            const submitButton = document.getElementById('submit-button');
+
+            form.addEventListener('submit', function(event) {
+                // Prevent multiple submissions
+                submitButton.disabled = true;
+                submitButton.classList.add('cursor-not-allowed', 'opacity-50');
+
+                // Show spinner
+                spinner.classList.remove('hidden');
+            });
+        });
+    </script>
 </x-layout>

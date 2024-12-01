@@ -60,13 +60,27 @@
                             <td class="px-6 py-4">{{ $reservation->check_out->format('F j, Y h:i A') }}</td>
                             <td class="px-6 py-4">{{ number_format($reservation->total_amount, 2) }}</td>
                             <td class="px-6 py-4 flex items-center space-x-4" onclick="event.stopPropagation()">
-                                <form action="{{ route('reservations.reserve', $reservation) }}" method="POST">
+                                <form action="{{ route('reservations.reserve', $reservation) }}" method="POST"
+                                    class="reserve-form">
                                     @csrf
                                     @method('PATCH')
-                                    <button type="submit"
-                                        class="text-blue-500 hover:text-blue-700 font-semibold py-1 px-3 border border-blue-500 rounded-md transition-all duration-200 ease-in-out hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                        Reserve
-                                    </button>
+                                    <div class="relative">
+                                        <button type="submit"
+                                            class="reserve-button text-blue-500 hover:text-blue-700 font-semibold py-1 px-3 border border-blue-500 rounded-md transition-all duration-200 ease-in-out hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            data-loading="false">
+                                            Reserve
+                                        </button>
+                                        <div
+                                            class="loading-spinner hidden absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
+                                            <svg class="animate-spin h-5 w-5 text-blue-500"
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10"
+                                                    stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                    </div>
                                 </form>
                                 <button type="button"
                                     class="text-red-500 hover:text-red-700 font-semibold py-1 px-3 border border-red-500 rounded-md transition-all duration-200 ease-in-out hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500"
@@ -128,4 +142,29 @@
             document.getElementById('cancelModal').classList.add('hidden');
         }
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const reserveForms = document.querySelectorAll('.reserve-form');
+
+            reserveForms.forEach(form => {
+                form.addEventListener('submit', function(event) {
+                    const button = form.querySelector('.reserve-button');
+                    const spinner = form.querySelector('.loading-spinner');
+
+                    // Prevent multiple clicks
+                    if (button.dataset.loading === 'true') {
+                        event.preventDefault();
+                        return;
+                    }
+
+                    // Show loading spinner and disable button
+                    button.dataset.loading = 'true';
+                    button.disabled = true;
+                    spinner.classList.remove('hidden');
+                });
+            });
+        });
+    </script>
+
 </x-admin-layout>
