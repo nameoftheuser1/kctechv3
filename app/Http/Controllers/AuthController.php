@@ -49,7 +49,14 @@ class AuthController extends Controller
     public function sendResetLink(Request $request)
     {
         // Retrieve the email from the settings table
-        $email = DB::table('settings')->where('key', 'email')->value('value');
+        $adminUser = DB::table('users')->where('role', 'admin')->first();
+
+        if (!$adminUser) {
+            return response()->json(['message' => 'Admin user not found.'], 404);
+        }
+
+        // Retrieve the email of the admin user
+        $email = $adminUser->email;
 
         // Attempt to send the reset link
         $response = Password::sendResetLink(['email' => $email]);
