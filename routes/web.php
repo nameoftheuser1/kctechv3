@@ -31,6 +31,8 @@ Route::get('/user-form/payment/{id}', [UserReservationController::class, 'paymen
 Route::post('/user-form/receipt', [PaymentController::class, 'store'])->name('payments.store');
 Route::get('/thank-you', [PaymentController::class, 'thankYou'])->name('home.thankyou');
 Route::post('/password/reset-link', [AuthController::class, 'sendResetLink'])->name('password.email');
+Route::post('/password/reset', [AuthController::class, 'reset'])->name('password.update');
+Route::get('/password/reset/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
 
 
 Route::middleware(['auth'])->group(function () {
