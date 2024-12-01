@@ -32,8 +32,7 @@
                     'name' => 'Enter guest name',
                     'address' => 'Enter guest address',
                     'pax' => 'Enter number of guests',
-                    'contact' =>
-                        'Enter G-cash number (This contact number should be the number that will pay the downpayment)',
+                    'contact' => 'Enter Contact Number',
                     'car_unit_plate_number' => 'Enter car unit plate number (Optional, only if)',
                     'email' => 'Enter your email address',
                 ];

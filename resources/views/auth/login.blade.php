@@ -39,13 +39,13 @@
                 </div>
             </form>
 
-            <div class="mt-6 text-center">
+            {{-- <div class="mt-6 text-center">
                 <button id="resetPasswordButton"
                     class="w-full bg-slate-500 text-white font-semibold py-2 rounded-md hover:bg-slate-600 transition duration-200"
                     onclick="sendResetLink()" disabled>
                     Reset Password (<span id="timer">60</span>s)
                 </button>
-            </div>
+            </div> --}}
         </div>
     </div>
 

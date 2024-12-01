@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ReservationUpdated;
 use App\Models\Expense;
 use App\Models\Reservation;
 use App\Models\Room;
@@ -10,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class ReservationController extends Controller
 {
@@ -17,13 +19,14 @@ class ReservationController extends Controller
     {
         $query = Reservation::query();
 
+        // Exclude reservations with status 'cancel'
+        $query->where('status', '!=', 'cancel');
+
         // Search by 'contact', 'name', or 'address'
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('contact', 'like', '%' . $search . '%')
-                    ->orWhere('name', 'like', '%' . $search . '%')
-                    ->orWhere('address', 'like', '%' . $search . '%');
+                $q->where('name', 'like', '%' . $search . '%');
             });
         }
 
@@ -35,6 +38,11 @@ class ReservationController extends Controller
         // Filter by day
         if ($request->has('day') && $request->day != '') {
             $query->whereDay('created_at', $request->day);
+        }
+
+        // Filter by status
+        if ($request->has('status') && $request->status != '') {
+            $query->where('status', $request->status);
         }
 
         // Clone the query to get the count before pagination
@@ -81,17 +89,16 @@ class ReservationController extends Controller
         // Fetch the updated rooms
         $rooms = Room::whereIn('id', $validatedData['rooms'])->get();
 
-        // Calculate the new total price
-        $totalPrice = $rooms->sum(function ($room) use ($duration, $validatedData) {
-            if ($validatedData['stay_type'] === 'day tour') {
-                return $room->day_tour_rate * $duration;
-            } else { // Overnight
-                return $room->overnight_rate * $duration;
-            }
+        // Calculate the total price based on stay type and room price (no duration)
+        $totalPrice = $rooms->sum(function ($room) use ($validatedData) {
+            return $room->price; // No duration multiplier needed
         });
 
-        // Update reservation fields, including the recalculated total price
-        $reservation->update(array_merge($validatedData, ['total_price' => $totalPrice]));
+        // Update the reservation with the calculated total amount
+        $reservation->update(['total_amount' => $totalPrice]);
+
+        // Send the email to the reservation email
+        Mail::to($reservation->email)->send(new ReservationUpdated($reservation));
 
         return redirect()
             ->route('reservations.index')
@@ -160,46 +167,11 @@ class ReservationController extends Controller
             'status' => 'required|string|in:check out',
         ]);
 
-        $additionalCharges = 0;
-
         // Check if the status is 'check out'
         if ($request->input('status') === 'check out') {
             $checkoutTime = now();
             $reservation->checkout_time = $checkoutTime; // Update the actual check-out time
-
-            // Calculate late check-out fees
-            $originalCheckout = $reservation->getOriginal('check_out'); // Get the scheduled check-out time
-            if ($originalCheckout) {
-                $lateHours = $checkoutTime->diffInHours($originalCheckout, false); // Calculate hours past check-out time
-
-                if ($lateHours > 0) {
-                    if ($reservation->pax >= 8 && $reservation->pax <= 15) {
-                        $additionalCharges += $lateHours * 1000;
-                    } elseif ($reservation->pax >= 2 && $reservation->pax <= 7) {
-                        $additionalCharges += $lateHours * 500;
-                    }
-                }
-            }
-
-            // Calculate charges for open cottages or tables
-            if (isset($reservation->cottage_type)) {
-                if ($reservation->cottage_type === 'day tour') {
-                    $additionalCharges += $reservation->pax * 200;
-                } elseif ($reservation->cottage_type === 'overnight') {
-                    $additionalCharges += $reservation->pax * 300;
-                }
-            }
-
-            // Save the additional charges to the sales_reports table
-            DB::table('sales_reports')->insert([
-                'reservation_id' => $reservation->id,
-                'amount' => $additionalCharges,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-
             // Update the total amount in the reservation
-            $reservation->total_amount += $additionalCharges;
         }
 
         // Update the reservation status

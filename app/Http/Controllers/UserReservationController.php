@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\ReservationNotification;
 use App\Models\Reservation;
 use App\Models\Room;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -95,7 +96,7 @@ class UserReservationController extends Controller
             $reservation->load('rooms');
 
             // Retrieve admin email from settings
-            $adminEmail = Auth::check() && Auth::user()->role == 'admin' ? Auth::user()->email : null;
+            $adminEmail = User::where('role', 'admin')->value('email');
 
             // Send email to admin and user
             Mail::to($adminEmail)->send(new ReservationNotification($reservation, 'admin'));
