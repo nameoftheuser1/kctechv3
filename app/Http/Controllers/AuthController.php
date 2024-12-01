@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Password;
 
 class AuthController extends Controller
 {
@@ -39,5 +41,23 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/login');
+    }
+
+    /**
+     * Send the reset password link to the configured email.
+     */
+    public function sendResetLink(Request $request)
+    {
+        // Retrieve the email from the settings table
+        $email = DB::table('settings')->where('key', 'email')->value('value');
+
+        // Attempt to send the reset link
+        $response = Password::sendResetLink(['email' => $email]);
+
+        if ($response === Password::RESET_LINK_SENT) {
+            return response()->json(['message' => 'Reset link sent to your email!'], 200);
+        }
+
+        return response()->json(['message' => 'Failed to send reset link.'], 500);
     }
 }

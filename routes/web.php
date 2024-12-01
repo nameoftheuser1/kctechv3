@@ -30,6 +30,8 @@ Route::post('/user-form/check-availability', [UserReservationController::class, 
 Route::get('/user-form/payment/{id}', [UserReservationController::class, 'payment'])->name('user-form.payment');
 Route::post('/user-form/receipt', [PaymentController::class, 'store'])->name('payments.store');
 Route::get('/thank-you', [PaymentController::class, 'thankYou'])->name('home.thankyou');
+Route::post('/password/reset-link', [AuthController::class, 'sendResetLink'])->name('password.email');
+
 
 Route::middleware(['auth'])->group(function () {
     // Route::get('/reservations/check-date', [ReservationController::class, 'checkDate'])->name('reservations.check-date');
