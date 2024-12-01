@@ -33,8 +33,9 @@
 
             @foreach ($fields as $field => $placeholder)
                 <div class="mb-4 w-full">
-                    <label for="{{ $field }}"
-                        class="block text-gray-700 font-bold mb-2 text-sm">{{ ucfirst(str_replace('_', ' ', $field)) }}</label>
+                    <label for="{{ $field }}" class="block text-gray-700 font-bold mb-2 text-sm">
+                        {{ ucfirst(str_replace('_', ' ', $field)) }}
+                    </label>
                     <input type="{{ $field === 'pax' ? 'number' : 'text' }}" name="{{ $field }}"
                         id="{{ $field }}"
                         class="w-full text-gray-600 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
@@ -53,9 +54,9 @@
 
             @foreach ($dateFields as $field)
                 <div class="mb-4 w-full">
-                    <label for="{{ $field }}"
-                        class="block text-gray-700 font-bold mb-2 text-sm">{{ ucfirst(str_replace('_', ' ', $field)) }}
-                        Date and Time</label>
+                    <label for="{{ $field }}" class="block text-gray-700 font-bold mb-2 text-sm">
+                        {{ ucfirst(str_replace('_', ' ', $field)) }} Date and Time
+                    </label>
                     <input type="datetime-local" name="{{ $field }}" id="{{ $field }}"
                         value="{{ old($field, $reservation->$field->format('Y-m-d\TH:i')) }}"
                         class="w-full text-gray-600 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
@@ -78,13 +79,35 @@
                     </option>
                 </select>
             </div>
+
             <button type="button" id="check-availability-button"
                 class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase">
                 Check Room Availability
             </button>
+
             <div class="mb-4">
-                <label class="block text-gray-700 font-bold mb-2 text-sm">Available Rooms</label>
-                <div id="room-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <label class="block text-gray-700 font-bold mb-2 text-sm">
+                    @if ($selectedRoomIds)
+                        Selected Rooms
+                    @else
+                        Available Rooms
+                    @endif
+                </label>
+
+                <div id="selected-rooms-container" class="mb-4">
+                    @if ($selectedRoomIds)
+                        @foreach ($availableRooms->whereIn('id', $selectedRoomIds) as $room)
+                            <div class="bg-gray-100 p-3 rounded-lg mb-2">
+                                <p class="text-gray-600 text-sm">
+                                    {{ $room->room_number }} - {{ $room->room_type }} -
+                                    pax({{ $room->pax }}) - ₱{{ $room->price }}
+                                </p>
+                            </div>
+                        @endforeach
+                    @endif
+                </div>
+
+                <div id="room-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 hidden">
                     @foreach ($availableRooms as $room)
                         <div class="room-item">
                             <div class="flex items-center">
@@ -92,8 +115,8 @@
                                     value="{{ $room->id }}" class="mr-2"
                                     {{ in_array($room->id, $selectedRoomIds) ? 'checked' : '' }}>
                                 <label for="room_{{ $room->id }}" class="text-gray-600 text-sm">
-                                    {{ $room->room_number }} - {{ $room->room_type }} - pax({{ $room->pax }}) -
-                                    ₱{{ $room->price }}
+                                    {{ $room->room_number }} - {{ $room->room_type }} -
+                                    pax({{ $room->pax }}) - ₱{{ $room->price }}
                                 </label>
                             </div>
                         </div>
@@ -101,11 +124,9 @@
                 </div>
             </div>
 
-
             @error('rooms')
                 <p class="text-sm text-red-600 mb-4">{{ $message }}</p>
             @enderror
-
 
             <button type="submit"
                 class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 uppercase">
@@ -113,18 +134,19 @@
             </button>
         </form>
 
-        <!-- Add JavaScript for dynamic room availability check -->
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const checkInField = document.getElementById('check_in');
                 const checkOutField = document.getElementById('check_out');
                 const checkAvailabilityButton = document.getElementById('check-availability-button');
                 const roomContainer = document.getElementById('room-container');
+                const selectedRoomsContainer = document.getElementById('selected-rooms-container');
 
                 if (checkAvailabilityButton) {
                     checkAvailabilityButton.addEventListener('click', function() {
                         const checkIn = checkInField.value;
                         const checkOut = checkOutField.value;
+                        const stayType = document.getElementById('stay_type').value;
 
                         if (!checkIn || !checkOut) {
                             alert('Please select check-in and check-out dates');
@@ -144,13 +166,15 @@
                                 body: JSON.stringify({
                                     check_in: checkIn,
                                     check_out: checkOut,
-                                    stay_type: document.getElementById('stay_type')
-                                        .value
+                                    stay_type: stayType
                                 })
                             })
                             .then(response => response.json())
                             .then(data => {
-                                // Clear previous room options
+                                // Hide the current selected rooms container
+                                selectedRoomsContainer.innerHTML = '';
+
+                                // Clear previous room options and show new rooms
                                 roomContainer.innerHTML = '';
 
                                 if (data.rooms.length > 0) {
@@ -158,20 +182,22 @@
                                         const roomDiv = document.createElement('div');
                                         roomDiv.classList.add('room-item');
                                         roomDiv.innerHTML = `
-                            <div class="flex items-center">
-                                <input type="checkbox" name="rooms[]" id="room_${room.id}"
-                                    value="${room.id}" class="mr-2">
-                                <label for="room_${room.id}" class="text-gray-600 text-sm">
-                                    ${room.room_number} - ${room.room_type} - pax(${room.pax}) - ₱${room.price}
-                                </label>
-                            </div>
-                        `;
+                                        <div class="flex items-center">
+                                            <input type="checkbox" name="rooms[]" id="room_${room.id}"
+                                                value="${room.id}" class="mr-2">
+                                            <label for="room_${room.id}" class="text-gray-600 text-sm">
+                                                ${room.room_number} - ${room.room_type} - pax(${room.pax}) - ₱${room.price}
+                                            </label>
+                                        </div>
+                                    `;
                                         roomContainer.appendChild(roomDiv);
                                     });
+
+                                    // Remove the 'hidden' class to show the rooms
                                     roomContainer.classList.remove('hidden');
                                 } else {
                                     roomContainer.innerHTML =
-                                        '<p>No rooms available for the selected dates.</p>';
+                                        '<p class="text-red-500">No rooms available for the selected dates.</p>';
                                     roomContainer.classList.remove('hidden');
                                 }
                             })
@@ -184,6 +210,5 @@
                 }
             });
         </script>
-
     </div>
 </x-admin-layout>
