@@ -1,6 +1,6 @@
-<!-- resources/views/emails/reservation_updated.blade.php -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,8 +16,8 @@
         <li>Total Amount: {{ $reservation->total_amount }}</li>
         <li>Rooms:
             <ul>
-                @foreach($reservation->rooms as $room)
-                    <li>{{ $room->name }}</li>
+                @foreach ($reservation->rooms as $room)
+                    <li>Room Number: {{ $room->room_number }}, Type: {{ $room->room_type }}</li>
                 @endforeach
             </ul>
         </li>

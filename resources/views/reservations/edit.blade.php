@@ -134,6 +134,10 @@
             </button>
         </form>
 
+        <div id="loading-spinner" class="hidden flex justify-center items-center mt-4">
+            <div class="animate-spin rounded-full h-10 w-10 border-t-4 border-blue-500 border-opacity-75"></div>
+        </div>
+
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const checkInField = document.getElementById('check_in');
@@ -141,6 +145,7 @@
                 const checkAvailabilityButton = document.getElementById('check-availability-button');
                 const roomContainer = document.getElementById('room-container');
                 const selectedRoomsContainer = document.getElementById('selected-rooms-container');
+                const loadingSpinner = document.getElementById('loading-spinner');
 
                 if (checkAvailabilityButton) {
                     checkAvailabilityButton.addEventListener('click', function() {
@@ -152,6 +157,9 @@
                             alert('Please select check-in and check-out dates');
                             return;
                         }
+
+                        // Show the spinner
+                        loadingSpinner.classList.remove('hidden');
 
                         // CSRF Token for security
                         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute(
@@ -171,6 +179,9 @@
                             })
                             .then(response => response.json())
                             .then(data => {
+                                // Hide the spinner
+                                loadingSpinner.classList.add('hidden');
+
                                 // Hide the current selected rooms container
                                 selectedRoomsContainer.innerHTML = '';
 
@@ -202,6 +213,8 @@
                                 }
                             })
                             .catch(error => {
+                                // Hide the spinner
+                                loadingSpinner.classList.add('hidden');
                                 console.error('Error fetching room availability:', error);
                             });
                     });
