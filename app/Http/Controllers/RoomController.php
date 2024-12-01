@@ -14,12 +14,9 @@ class RoomController extends Controller
 
         $rooms = Room::query()
             ->when($search, function ($query, $search) {
-                $query->where('room_number', 'like', "%{$search}%")
-                    ->orWhere('price', 'like', "%{$search}%")
-                    ->orWhere('pax', 'like', "%{$search}%")
-                    ->orWhere('stay_type', 'like', "%{$search}%");
+                $query->where('room_number', 'like', "%{$search}%");
             })
-            ->latest()
+            ->orderBy('stay_type', 'asc') // Add this line to sort alphabetically
             ->paginate(10);
 
         return view('rooms.index', ['rooms' => $rooms]);

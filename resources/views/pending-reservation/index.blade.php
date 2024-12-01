@@ -59,7 +59,7 @@
                             <td class="px-6 py-4">{{ $reservation->check_in->format('F j, Y h:i A') }}</td>
                             <td class="px-6 py-4">{{ $reservation->check_out->format('F j, Y h:i A') }}</td>
                             <td class="px-6 py-4">{{ number_format($reservation->total_amount, 2) }}</td>
-                            <td class="px-6 py-4 flex items-center space-x-4">
+                            <td class="px-6 py-4 flex items-center space-x-4" onclick="event.stopPropagation()">
                                 <form action="{{ route('reservations.reserve', $reservation) }}" method="POST">
                                     @csrf
                                     @method('PATCH')
@@ -68,6 +68,11 @@
                                         Reserve
                                     </button>
                                 </form>
+                                <button type="button"
+                                    class="text-red-500 hover:text-red-700 font-semibold py-1 px-3 border border-red-500 rounded-md transition-all duration-200 ease-in-out hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                                    onclick="openCancelModal({{ $reservation->id }}, '{{ $reservation->name }}')">
+                                    Cancel
+                                </button>
                             </td>
                         </tr>
                     @empty
@@ -86,6 +91,19 @@
         {{ $reservations->links() }}
     </div>
 
+    <div id="cancelModal" class="hidden fixed inset-0 z-50 flex justify-center items-center bg-gray-500 bg-opacity-50">
+        <div class="bg-white p-4 rounded-lg w-1/3">
+            <h3 class="text-lg font-semibold">Confirm Cancellation</h3>
+            <p>Are you sure you want to cancel the reservation for <span id="cancelName"></span>?</p>
+            <form id="cancelForm" action="" method="POST" class="mt-4">
+                @csrf
+                @method('PATCH')
+                <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg">Confirm</button>
+                <button type="button" onclick="closeCancelModal()" class="ml-2 text-gray-500">Cancel</button>
+            </form>
+        </div>
+    </div>
+
     <script src="{{ asset('js/confirmation.js') }}"></script>
     <script src="{{ asset('js/search.js') }}"></script>
     <script>
@@ -99,7 +117,15 @@
         }
 
         function openCancelModal(reservationId, name) {
-            // Code for opening cancellation modal
+            document.getElementById('cancelModal').classList.remove('hidden');
+            document.getElementById('cancelName').innerText = name;
+            document.getElementById('cancelForm').action = "{{ route('reservations.cancel', ':id') }}".replace(':id',
+                reservationId);
+        }
+
+        // Close Cancel Modal
+        function closeCancelModal() {
+            document.getElementById('cancelModal').classList.add('hidden');
         }
     </script>
 </x-admin-layout>

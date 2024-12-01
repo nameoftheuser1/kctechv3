@@ -32,12 +32,12 @@
                         Update email
                     </a>
                 </li>
-                {{-- <li>
+                <li>
                     <a href="{{ route('settings.edit') }}"
                         class="mt-2 block px-4 py-3 bg-gray-100 rounded-lg text-blue-600 font-semibold  hover:bg-blue-500 hover:text-white">
-                        Update year and months in dashboard
+                        Update years in dashboard
                     </a>
-                </li> --}}
+                </li>
             </ul>
         </div>
     </div>

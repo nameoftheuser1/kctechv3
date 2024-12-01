@@ -39,6 +39,13 @@
                         </option>
                     @endfor
                 </select>
+                <select name="status" class="p-2 border text-sm rounded w-full md:w-1/3 mb-1 md:mr-2">
+                    <option value="">Filter by Status</option>
+                    <option value="reserved" {{ request('status') == 'reserved' ? 'selected' : '' }}>Reserved</option>
+                    <option value="check in" {{ request('status') == 'check in' ? 'selected' : '' }}>Check In</option>
+                    <option value="check out" {{ request('status') == 'check out' ? 'selected' : '' }}>Check Out
+                    </option>
+                </select>
                 <input type="number" name="day" min="1" max="31" placeholder="Day"
                     class="p-2 border text-sm rounded w-full md:w-1/3 mb-1 md:mr-2" value="{{ request('day') }}" />
                 <button type="submit"

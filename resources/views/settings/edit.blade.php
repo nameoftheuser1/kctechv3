@@ -89,7 +89,7 @@
                     @enderror
                 </div> --}}
 
-                <div class="mb-4">
+                {{-- <div class="mb-4">
                     <label for="historical_sales_data" class="block text-gray-700 font-semibold mb-2">Historical Sales
                         Data (months)</label>
                     <input type="number" id="historical_sales_data" name="historical_sales_data"
@@ -123,7 +123,7 @@
                     @error('historical_reservations_data')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
-                </div>
+                </div> --}}
 
                 <button type="submit"
                     class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105">

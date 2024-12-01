@@ -21,8 +21,7 @@ class PaymentController extends Controller
         $search = $request->get('search');
         $payments = Payment::query()
             ->when($search, function ($query) use ($search) {
-                $query->where('reference_number', 'like', "%{$search}%")
-                    ->orWhere('reservation_id', 'like', "%{$search}%");
+                $query->where('reference_number', 'like', "%{$search}%");
             })
             ->orderBy('created_at', 'desc')
             ->paginate(10);
