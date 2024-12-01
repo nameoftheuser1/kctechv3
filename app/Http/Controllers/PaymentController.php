@@ -6,6 +6,7 @@ use App\Models\Payment;
 use App\Mail\PaymentReceived;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
@@ -72,7 +73,7 @@ class PaymentController extends Controller
         ]);
 
         // Get the admin's email
-        $adminEmail = DB::table('settings')->where('key', 'email')->value('value');
+        $adminEmail = Auth::check() && Auth::user()->role == 'admin' ? Auth::user()->email : null;
 
         // Send an email to the admin
         Mail::to($adminEmail)->send(new PaymentReceived($reservation, $payment));

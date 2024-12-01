@@ -43,7 +43,7 @@
                 <div class="mb-4">
                     <label for="email" class="block text-gray-700 font-semibold mb-2">Email Address</label>
                     <input type="email" id="email" name="email"
-                        class="border rounded-lg w-full p-2 focus:ring-blue-500" value="{{ $emailSetting->value }}"
+                        class="border rounded-lg w-full p-2 focus:ring-blue-500" value="{{ $emailSetting->email }}"
                         required>
                     @error('email')
                         <span class="text-red-500 text-sm">{{ $message }}</span>

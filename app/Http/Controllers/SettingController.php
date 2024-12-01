@@ -23,8 +23,34 @@ class SettingController extends Controller
 
     public function editEmail()
     {
-        $emailSetting = Setting::where('key', 'email')->first();
-        return view('settings.edit-email', compact('emailSetting'));
+        if (Auth::check() && Auth::user()->role === 'admin') {
+            // Retrieve the current email from the settings or directly from Auth
+            $emailSetting = Auth::user(); // This gives the authenticated admin's user instance
+
+            return view('settings.edit-email', compact('emailSetting'));
+        }
+
+        return redirect()->route('home')->with('error', 'You do not have permission to access this page.');
+    }
+
+    public function updateEmail(Request $request)
+    {
+        if (Auth::check() && Auth::user()->role === 'admin') {
+            // Validate the email input
+            $validated = $request->validate([
+                'email' => 'required|email|unique:users,email,' . Auth::id(),
+            ]);
+
+            // Update the authenticated user's email
+            $user = Auth::user();
+            $user->email = $validated['email'];
+            $user->save();
+
+            // Redirect back with success message
+            return redirect()->route('settings.updateEmail')->with('success', 'Email updated successfully.');
+        }
+
+        return redirect()->route('home')->with('error', 'You do not have permission to access this page.');
     }
 
     public function updatePassword(Request $request)

@@ -7,6 +7,7 @@ use App\Models\Reservation;
 use App\Models\Room;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -94,7 +95,7 @@ class UserReservationController extends Controller
             $reservation->load('rooms');
 
             // Retrieve admin email from settings
-            $adminEmail = DB::table('settings')->where('key', 'email')->value('value');
+            $adminEmail = Auth::check() && Auth::user()->role == 'admin' ? Auth::user()->email : null;
 
             // Send email to admin and user
             Mail::to($adminEmail)->send(new ReservationNotification($reservation, 'admin'));
