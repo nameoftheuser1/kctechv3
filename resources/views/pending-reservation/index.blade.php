@@ -16,7 +16,7 @@
 
             <!-- Filter Form -->
             <form id="filter-form" class="flex flex-col md:flex-row mb-4">
-                <input type="text" name="search" id="search-input" placeholder="Search by contact..."
+                <input type="text" name="search" id="search-input" placeholder="Search by name..."
                     class="p-2 border text-sm rounded w-full md:w-1/3 focus:ring-pink-600 mb-1 md:mr-2"
                     value="{{ request('search') }}" />
                 <select name="month" class="p-2 border text-sm rounded w-full md:w-1/3 mb-1 md:mr-2">
@@ -158,10 +158,19 @@
                         return;
                     }
 
-                    // Show loading spinner and disable button
+                    // Mark as loading
                     button.dataset.loading = 'true';
+
+                    // Disable the button and show spinner
                     button.disabled = true;
                     spinner.classList.remove('hidden');
+
+                    // Optionally ensure that the event is handled only once
+                    form.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                    }, {
+                        once: true
+                    });
                 });
             });
         });

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\ReservationConfirmed;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class ReservationStatusController extends Controller
@@ -62,14 +63,22 @@ class ReservationStatusController extends Controller
      */
     public function reserve($reservationId)
     {
-        $reservation = Reservation::find($reservationId);
+        DB::transaction(function () use ($reservationId) {
+            $reservation = Reservation::lockForUpdate()->find($reservationId);
 
-        if ($reservation) {
+            if (!$reservation) {
+                throw new \Exception('Reservation not found.');
+            }
+
+            if ($reservation->status === 'reserved') {
+                throw new \Exception('This reservation is already reserved.');
+            }
+
             $reservation->status = 'reserved';
             $reservation->save();
 
             Mail::to($reservation->email)->send(new ReservationConfirmed($reservation));
-        }
+        });
 
         return redirect()->route('reservations.index')->with('success', 'Reservation status set to reserved.');
     }
