@@ -60,7 +60,7 @@ class DashboardController extends Controller
 
         $totalLoss = $totalExpenses + $totalSalaries;
 
-        $totalRevenue = $totalRevenue + $totalSalesReport;
+        $combinedRevenue = $totalRevenue + $totalSalesReport;
 
         // Calculate the loss vs income
         $overallLossVsIncome = $totalRevenue - ($totalExpenses + $totalSalaries);
@@ -72,6 +72,7 @@ class DashboardController extends Controller
             'totalLoss' => $totalLoss,
             'currentYear' => $currentYear,
             'totalRevenue' => $totalRevenue,
+            'combinedRevenue' => $combinedRevenue,
             'totalExpenses' => $totalExpenses,
             'totalSalaries' => $totalSalaries,
             'totalCommissions' =>  $totalCommissions,
