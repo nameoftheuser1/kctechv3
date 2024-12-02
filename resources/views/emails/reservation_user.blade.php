@@ -25,7 +25,8 @@
 
 <p><strong>Total Room Price:</strong> {{ number_format($totalRoomPrice, 2) }}</p>
 
-<p>To complete your reservation, please proceed with the down payment.</p>
+<p>To complete your reservation, please proceed with the down payment. You can send your payment via GCash to this
+    number: 09057556578.</p>
 
 <p><a href="{{ route('user-form.payment', ['id' => $reservation->id, 'down_payment' => $reservation->down_payment]) }}"
         style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Proceed
