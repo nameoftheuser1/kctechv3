@@ -33,7 +33,7 @@ class SalesReportController extends Controller
      */
     public function create()
     {
-        $reservations = Reservation::all(); // Assuming you have a Reservation model
+        $reservations = Reservation::orderBy('name')->get(); // Sort reservations by name
         return view('sales-reports.create', compact('reservations'));
     }
     /**
