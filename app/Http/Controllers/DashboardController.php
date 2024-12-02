@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Employee;
 use App\Models\Expense;
 use App\Models\Reservation;
+use App\Models\SalesReport;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -26,13 +27,12 @@ class DashboardController extends Controller
         $currentYear = date('Y');
 
         // Total revenue for the specified year (show 0 if null)
-        $totalRevenue = Reservation::whereYear('reservations.created_at', $totalRevenueYear) // Specify the table
-            ->where('reservations.status', 'check out') // Specify the table
-            ->leftJoin('sales_reports', 'reservations.id', '=', 'sales_reports.reservation_id')
-            ->select(
-                DB::raw('SUM(reservations.total_amount) + IFNULL(SUM(sales_reports.amount), 0) as total_revenue')
-            )
-            ->value('total_revenue') ?? 0;
+        $totalRevenue = Reservation::whereYear('created_at', $totalRevenueYear)
+            ->where('status', 'check out')
+            ->sum('total_amount') ?? 0;
+
+        $totalSalesReport = SalesReport::whereYear('created_at', $totalRevenueYear)
+            ->sum('amount') ?? 0;
 
         // Total expenses for the specified year (show 0 if null)
         $totalExpenses = Expense::whereYear('date_time', $totalExpensesYear)
@@ -59,6 +59,9 @@ class DashboardController extends Controller
         $predictedReservations = $this->predictReservations($predictReservationsMonth);
 
         $totalLoss = $totalExpenses + $totalSalaries;
+
+        $totalRevenue = $totalRevenue + $totalSalesReport;
+
         // Calculate the loss vs income
         $overallLossVsIncome = $totalRevenue - ($totalExpenses + $totalSalaries);
 
