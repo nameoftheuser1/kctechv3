@@ -26,8 +26,8 @@ class DashboardController extends Controller
         $currentYear = date('Y');
 
         // Total revenue for the specified year (show 0 if null)
-        $totalRevenue = Reservation::whereYear('created_at', $totalRevenueYear)
-            ->where('status', 'check out')
+        $totalRevenue = Reservation::whereYear('reservations.created_at', $totalRevenueYear) // Specify the table
+            ->where('reservations.status', 'check out') // Specify the table
             ->leftJoin('sales_reports', 'reservations.id', '=', 'sales_reports.reservation_id')
             ->select(
                 DB::raw('SUM(reservations.total_amount) + IFNULL(SUM(sales_reports.amount), 0) as total_revenue')
