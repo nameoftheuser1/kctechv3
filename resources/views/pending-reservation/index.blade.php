@@ -27,8 +27,8 @@
                         </option>
                     @endfor
                 </select>
-                <input type="number" name="day" min="1" max="31" placeholder="Day"
-                    class="p-2 border text-sm rounded w-full md:w-1/3 mb-1 md:mr-2" value="{{ request('day') }}" />
+                {{-- <input type="number" name="day" min="1" max="31" placeholder="Day"
+                    class="p-2 border text-sm rounded w-full md:w-1/3 mb-1 md:mr-2" value="{{ request('day') }}" /> --}}
                 <button type="submit"
                     class="p-2 bg-blue-500 text-white rounded w-full md:w-auto text-sm hover:bg-blue-700">Filter</button>
             </form>
