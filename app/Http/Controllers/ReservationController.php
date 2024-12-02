@@ -49,7 +49,7 @@ class ReservationController extends Controller
         $reservationCount = $query->count();
 
         // Order by latest created_at
-        $query->orderBy('created_at', 'desc');
+        $query->orderBy('check_in', 'desc');
 
         // Fetch paginated reservations with associated rooms
         $reservations = $query->paginate(10);
