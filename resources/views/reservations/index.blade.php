@@ -28,7 +28,7 @@
 
             <!-- Filter Form -->
             <form id="filter-form" class="flex flex-col md:flex-row mb-4">
-                <input type="text" name="search" id="search-input" placeholder="Search by contact..."
+                <input type="text" name="search" id="search-input" placeholder="Search by name..."
                     class="p-2 border text-sm rounded w-full md:w-1/3 focus:ring-pink-600 mb-1 md:mr-2"
                     value="{{ request('search') }}" />
                 <select name="month" class="p-2 border text-sm rounded w-full md:w-1/3 mb-1 md:mr-2">
