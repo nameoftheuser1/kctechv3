@@ -13,7 +13,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600">Total Revenue</p>
-                        <h3 class="text-2xl font-bold text-green-600 mt-1">₱{{ number_format($totalRevenue, 2) }}</h3>
+                        <h3 class="text-2xl font-bold text-green-600 mt-1">₱{{ number_format($combinedRevenue, 2) }}</h3>
                         <p class="text-sm font-medium text-gray-600">
                             This data covers the period {{ $totalRevenueYear }}.
                         </p>
