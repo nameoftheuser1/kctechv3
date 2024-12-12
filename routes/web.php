@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PendingReservationController;
 use App\Http\Controllers\ReservationController;
@@ -49,6 +50,8 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('reservations/{reservation}/reserve', [ReservationStatusController::class, 'reserve'])->name('reservations.reserve');
 
     Route::middleware(['role:admin'])->group(function () {
+
+        Route::get('/notifications/unread-reservations', [NotificationController::class, 'unreadReservationCount'])->name('notifications.unread');
 
         Route::get('/settings/email/edit', [SettingController::class, 'editEmail'])->name('settings.editEmail');
         Route::put('/settings/email/edit', [SettingController::class, 'updateEmail'])->name('settings.updateEmail');
