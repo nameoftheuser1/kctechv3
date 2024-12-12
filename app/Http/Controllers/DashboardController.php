@@ -202,6 +202,7 @@ class DashboardController extends Controller
      */
     private function getReservationCountsForPastMonths($months)
     {
+        //dapat status e check out tapos gawing checkout ang time
         $counts = [];
         for ($i = $months - 1; $i >= 0; $i--) {
             $date = Carbon::now()->subMonths($i);
