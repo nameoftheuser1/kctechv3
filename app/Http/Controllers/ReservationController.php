@@ -8,9 +8,6 @@ use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\Setting;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class ReservationController extends Controller
@@ -32,12 +29,7 @@ class ReservationController extends Controller
 
         // Filter by month
         if ($request->has('month') && $request->month != '') {
-            $query->whereMonth('created_at', $request->month);
-        }
-
-        // Filter by day
-        if ($request->has('day') && $request->day != '') {
-            $query->whereDay('created_at', $request->day);
+            $query->whereMonth('check_in', $request->month);
         }
 
         // Filter by status

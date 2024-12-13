@@ -22,6 +22,8 @@ class DashboardController extends Controller
         $totalCommissionsYear = DB::table('settings')->where('key', 'total_commissions_year')->value('value') ?? 2024;
         $totalSalariesYear = DB::table('settings')->where('key', 'total_salaries_year')->value('value');
         $predictSalesMonth = DB::table('settings')->where('key', 'predict_sales_month')->value('value');
+        $reservationYear = DB::table('settings')->where('key', 'reservation_year')->value('value') ?? 2024;
+
 
         $currentYear = date('Y');
 
@@ -52,7 +54,7 @@ class DashboardController extends Controller
         $combinedSales = array_merge($historicalData, $predictedSales);
 
         // Get reservation counts for the past 12 months
-        $reservationCounts = $this->getReservationCountsForYearAndLastYear(2024);
+        $reservationCounts = $this->getReservationCountsForYearAndLastYear($reservationYear);
 
         $totalLoss = $totalExpenses + $totalSalaries;
 
