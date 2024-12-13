@@ -122,6 +122,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Enhanced Chart.js defaults for better visuals
@@ -141,27 +142,23 @@
                     labels: combinedSales.map(sale => sale.month),
                     datasets: [{
                         label: 'Combined Sales',
-                        data: combinedSales.map((sale, index) => {
-                            // Check if the sale is within the last 3 months for prediction
-                            return sale.revenue;
-                        }),
+                        data: combinedSales.map(sale => sale.revenue),
                         borderColor: (context) => {
                             const chart = context.chart;
                             const {
-                                ctx,
-                                data
+                                ctx
                             } = chart;
 
                             // Create gradient for distinguishing actual and predicted sales
                             const gradient = ctx.createLinearGradient(0, 0, ctx.canvas.width,
-                                0);
+                            0);
                             const totalDataPoints = combinedSales.length;
                             const actualSalesCount = totalDataPoints -
-                                3; // Last 3 months are for predicted sales
+                            3; // Last 3 months are for predicted sales
 
                             // Blue for actual sales, transitioning to red for predicted sales
                             gradient.addColorStop(0,
-                                'rgba(34, 197, 94, 1)'); // Actual sales color
+                            'rgba(34, 197, 94, 1)'); // Actual sales color
                             gradient.addColorStop(actualSalesCount / totalDataPoints,
                                 'rgba(34, 197, 94, 1)');
                             gradient.addColorStop(actualSalesCount / totalDataPoints,
@@ -170,7 +167,7 @@
 
                             return gradient;
                         },
-                        backgroundColor: 'rgba(34, 197, 94, 0.1)', // Keeps the background fill the same
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
                         tension: 0.4,
                         fill: true,
                         pointBackgroundColor: 'rgb(34, 197, 94)',
@@ -189,9 +186,28 @@
                                 label: function(context) {
                                     const sale = combinedSales[context.dataIndex];
                                     const isPredicted = context.dataIndex >= (combinedSales.length -
-                                        3); // Last 3 months are predicted
+                                    3); // Last 3 months are predicted
                                     const type = isPredicted ? 'Predicted Sales' : 'Actual Sales';
                                     return `${type}: ₱${context.raw.toLocaleString()}`;
+                                }
+                            }
+                        },
+                        annotation: {
+                            annotations: {
+                                predictionStart: {
+                                    type: 'line',
+                                    scaleID: 'x',
+                                    value: combinedSales.length - 3, // The index where prediction starts
+                                    borderColor: 'rgba(255, 99, 132, 0.8)',
+                                    borderWidth: 2,
+                                    label: {
+                                        enabled: true,
+                                        content: 'Prediction Starts',
+                                        position: 'start',
+                                        backgroundColor: 'rgba(255, 99, 132, 0.8)',
+                                        color: '#fff',
+                                        padding: 6
+                                    }
                                 }
                             }
                         }
@@ -281,7 +297,7 @@
                         const monthData = reservationCounts.find(item => item.year === year && item
                             .month === month);
                         return monthData ? monthData.count :
-                        0; // Return count if exists, otherwise 0
+                            0; // Return count if exists, otherwise 0
                     }),
                     backgroundColor: year === 2023 ? 'rgba(54, 162, 235, 0.8)' :
                     'rgba(249, 115, 22, 0.8)', // Different colors for each year
