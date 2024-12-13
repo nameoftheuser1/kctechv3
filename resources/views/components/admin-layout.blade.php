@@ -25,13 +25,21 @@
 
             <!-- Sidebar -->
             <aside id="sidebar"
-                class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out {{ $isOpen ?? false ? 'translate-x-0' : '-translate-x-full md:translate-x-0' }}">
-                <div class="flex justify-between items-center p-4 border-b mt-14 md:mt-0">
-                    <h2 class="text-2xl font-bold">Kandahar</h2>
-                </div>
+                class="bg-gradient-to-b from-[#bc9f81] to-amber-950 fixed inset-y-0 left-0 z-50 w-64 text-white shadow-lg transform transition-transform duration-300 ease-in-out {{ $isOpen ?? false ? 'translate-x-0' : '-translate-x-full md:translate-x-0' }}">
+                <a href="{{ route('dashboard.index') }}"
+                    class="flex justify-center items-center p-4 border-b mt-14 md:mt-0">
+                    <img src="{{ asset('img/KANDAHAR.jpg') }}" alt="kandahar.logo" srcset="" class="h-24 rounded">
+                </a>
                 <nav class="p-4">
                     @php
                         $menuItems = [
+                            [
+                                'icon' => '
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m8.99 14.993 6-6m6 3.001c0 1.268-.63 2.39-1.593 3.069a3.746 3.746 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043 3.745 3.745 0 0 1-3.068 1.593c-1.268 0-2.39-.63-3.068-1.593a3.745 3.745 0 0 1-3.296-1.043 3.746 3.746 0 0 1-1.043-3.297 3.746 3.746 0 0 1-1.593-3.068c0-1.268.63-2.39 1.593-3.068a3.746 3.746 0 0 1 1.043-3.297 3.745 3.745 0 0 1 3.296-1.042 3.745 3.745 0 0 1 3.068-1.594c1.268 0 2.39.63 3.068 1.593a3.745 3.745 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.297 3.746 3.746 0 0 1 1.593 3.068ZM9.74 9.743h.008v.007H9.74v-.007Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm4.125 4.5h.008v.008h-.008v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />',
+                                'label' => 'Pending Bookings',
+                                'route' => 'pending.index',
+                                'role' => 'admin',
+                            ],
                             [
                                 'icon' =>
                                     '<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />',
@@ -66,13 +74,7 @@
                                 'label' => 'Bookings',
                                 'route' => 'reservations.index',
                             ],
-                            [
-                                'icon' => '
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="m8.99 14.993 6-6m6 3.001c0 1.268-.63 2.39-1.593 3.069a3.746 3.746 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043 3.745 3.745 0 0 1-3.068 1.593c-1.268 0-2.39-.63-3.068-1.593a3.745 3.745 0 0 1-3.296-1.043 3.746 3.746 0 0 1-1.043-3.297 3.746 3.746 0 0 1-1.593-3.068c0-1.268.63-2.39 1.593-3.068a3.746 3.746 0 0 1 1.043-3.297 3.745 3.745 0 0 1 3.296-1.042 3.745 3.745 0 0 1 3.068-1.594c1.268 0 2.39.63 3.068 1.593a3.745 3.745 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.297 3.746 3.746 0 0 1 1.593 3.068ZM9.74 9.743h.008v.007H9.74v-.007Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm4.125 4.5h.008v.008h-.008v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />',
-                                'label' => 'Pending Bookings',
-                                'route' => 'pending.index',
-                                'role' => 'admin',
-                            ],
+
                             [
                                 'icon' => '
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />',
@@ -110,12 +112,17 @@
                                 <li
                                     class="mb-4 hover:bg-slate-300 rounded-lg p-1 {{ request()->routeIs($item['route']) ? 'bg-gray-300 text-slate-700' : '' }}">
                                     <a href="{{ route($item['route']) }}"
-                                        class="flex items-center space-x-2 text-slate-800">
+                                        class="flex items-center space-x-2 text-white">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
                                             {!! $item['icon'] !!}
                                         </svg>
                                         <span>{{ $item['label'] }}</span>
+                                        {{-- Add this new span for the unread count --}}
+                                        <span id="unread-count"
+                                            class=" bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">
+                                            0
+                                        </span>
                                     </a>
                                 </li>
                             @endif
@@ -171,6 +178,37 @@
                         sidebar.classList.add('-translate-x-full');
                         overlay.classList.add('hidden');
                     });
+                });
+            </script>
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    const unreadCountElement = document.getElementById("unread-count");
+
+                    function fetchUnreadCount() {
+                        fetch("{{ route('notifications.unread') }}", {
+                                headers: {
+                                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                        "content")
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.new_reservations_count > 0) {
+                                    unreadCountElement.textContent = data.new_reservations_count;
+                                    unreadCountElement.classList.remove("hidden");
+                                } else {
+                                    unreadCountElement.classList.add("hidden");
+                                }
+                            })
+                            .catch(error => console.error("Error fetching unread reservations count:", error));
+                    }
+
+                    // Fetch the count every 10 seconds
+                    setInterval(fetchUnreadCount, 10000);
+
+                    // Fetch the count immediately on page load
+                    fetchUnreadCount();
                 });
             </script>
         </div>
