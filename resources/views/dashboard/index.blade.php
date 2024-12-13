@@ -119,20 +119,6 @@
             </div>
         </div>
 
-        <!-- Predicted Reservations Chart -->
-        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 md:col-span-2 mt-4">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xl font-semibold text-gray-800">Predicted Reservations</h2>
-                <div class="flex items-center space-x-2">
-                    <span
-                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
-                        <span class="mr-1">●</span> Future Predictions
-                    </span>
-                </div>
-            </div>
-            <canvas id="predictedReservationsChart" class="w-full h-64"></canvas>
-        </div>
-
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -281,25 +267,43 @@
             const reservationsCtx = document.getElementById('reservationsCountChart').getContext('2d');
             const reservationCounts = @json($reservationCounts);
 
+            // Group data by year
+            const years = [...new Set(reservationCounts.map(item => item.year))]; // Extract unique years
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September',
+                'October', 'November', 'December'
+            ];
+
+            // Organize data for each year and month
+            const datasets = years.map(year => {
+                return {
+                    label: `Reservations in ${year}`,
+                    data: months.map(month => {
+                        const monthData = reservationCounts.find(item => item.year === year && item
+                            .month === month);
+                        return monthData ? monthData.count :
+                        0; // Return count if exists, otherwise 0
+                    }),
+                    backgroundColor: year === 2023 ? 'rgba(54, 162, 235, 0.8)' :
+                    'rgba(249, 115, 22, 0.8)', // Different colors for each year
+                    borderColor: year === 2023 ? 'rgb(54, 162, 235)' : 'rgb(249, 115, 22)',
+                    borderWidth: 1,
+                    borderRadius: 6,
+                    barThickness: 20
+                };
+            });
+
+            // Create the chart
             new Chart(reservationsCtx, {
                 type: 'bar',
                 data: {
-                    labels: reservationCounts.map(item => item.month),
-                    datasets: [{
-                        label: 'Reservations',
-                        data: reservationCounts.map(item => item.count),
-                        backgroundColor: 'rgba(249, 115, 22, 0.8)',
-                        borderColor: 'rgb(249, 115, 22)',
-                        borderWidth: 1,
-                        borderRadius: 6,
-                        barThickness: 20
-                    }]
+                    labels: months, // Use months as labels
+                    datasets: datasets // Add datasets for both years
                 },
                 options: {
                     responsive: true,
                     plugins: {
                         legend: {
-                            display: false
+                            display: true // Show legend to differentiate years
                         }
                     },
                     scales: {
@@ -317,66 +321,13 @@
                         x: {
                             grid: {
                                 display: false
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Predicted Reservations Chart
-            const predictedReservationsCtx = document.getElementById('predictedReservationsChart').getContext('2d');
-            const predictedReservations = @json($predictedReservations);
-
-            new Chart(predictedReservationsCtx, {
-                type: 'line',
-                data: {
-                    labels: predictedReservations.map(item => item.month),
-                    datasets: [{
-                        label: 'Predicted Reservations',
-                        data: predictedReservations.map(item => item.count),
-                        borderColor: 'rgb(147, 51, 234)',
-                        backgroundColor: 'rgba(147, 51, 234, 0.1)',
-                        tension: 0.4,
-                        fill: true,
-                        pointBackgroundColor: 'rgb(147, 51, 234)',
-                        pointRadius: 4,
-                        pointHoverRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `Predicted Reservations: ${Math.round(context.raw)}`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.05)'
                             },
-                            ticks: {
-                                callback: function(value) {
-                                    return Math.floor(value);
-                                }
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            }
+                            stacked: false // Bars are grouped side by side, not stacked
                         }
                     }
                 }
             });
+
         });
     </script>
 </x-admin-layout>

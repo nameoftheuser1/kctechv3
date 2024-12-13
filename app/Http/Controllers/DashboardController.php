@@ -22,7 +22,6 @@ class DashboardController extends Controller
         $totalCommissionsYear = DB::table('settings')->where('key', 'total_commissions_year')->value('value') ?? 2024;
         $totalSalariesYear = DB::table('settings')->where('key', 'total_salaries_year')->value('value');
         $predictSalesMonth = DB::table('settings')->where('key', 'predict_sales_month')->value('value');
-        $predictReservationsMonth = DB::table('settings')->where('key', 'predict_reservations_month')->value('value');
 
         $currentYear = date('Y');
 
@@ -53,10 +52,7 @@ class DashboardController extends Controller
         $combinedSales = array_merge($historicalData, $predictedSales);
 
         // Get reservation counts for the past 12 months
-        $reservationCounts = $this->getReservationCountsForPastMonths(12);
-
-        // Predict reservation counts for the next 6 months
-        $predictedReservations = $this->predictReservations($predictReservationsMonth);
+        $reservationCounts = $this->getReservationCountsForYearAndLastYear(2024);
 
         $totalLoss = $totalExpenses + $totalSalaries;
 
@@ -79,7 +75,6 @@ class DashboardController extends Controller
             'combinedSales' => $combinedSales,
             'overallLossVsIncome' => $overallLossVsIncome,
             'reservationCounts' => $reservationCounts,
-            'predictedReservations' => $predictedReservations,
         ]);
     }
 
@@ -122,44 +117,6 @@ class DashboardController extends Controller
     }
 
     /**
-     * Predict reservation counts for the next specified number of months.
-     *
-     * @param int $monthsToPredict
-     * @return array
-     */
-    private function predictReservations($monthsToPredict)
-    {
-        // Fetch historical reservation data for the past 12 months
-        $historicalData = $this->getReservationCountsForPastMonths(12);
-
-        // Prepare data for PHP-ML
-        $samples = [];
-        $targets = [];
-        foreach ($historicalData as $index => $data) {
-            $samples[] = [$index];
-            $targets[] = $data['count'];
-        }
-
-        // Train the model
-        $regression = new LeastSquares();
-        $regression->train($samples, $targets);
-
-        // Make predictions for the next months
-        $predictions = [];
-        $lastIndex = count($historicalData);
-        for ($i = 1; $i <= $monthsToPredict; $i++) {
-            $predictedCount = $regression->predict([$lastIndex + $i]);
-            $predictedMonth = Carbon::now()->addMonths($i);
-            $predictions[] = [
-                'month' => $predictedMonth->format('F Y'),
-                'count' => max(0, round($predictedCount)), // Ensure non-negative prediction
-            ];
-        }
-
-        return $predictions;
-    }
-
-    /**
      * Get historical sales data for the specified number of past months.
      *
      * @param int $months
@@ -194,27 +151,26 @@ class DashboardController extends Controller
         return $data;
     }
 
-    /**
-     * Get reservation counts for the specified number of past months.
-     *
-     * @param int $months
-     * @return array
-     */
-    private function getReservationCountsForPastMonths($months)
-    {
-        //dapat status e check out tapos gawing checkout ang time
-        $counts = [];
-        for ($i = $months - 1; $i >= 0; $i--) {
-            $date = Carbon::now()->subMonths($i);
-            $count = Reservation::whereMonth('created_at', $date->month)
-                ->whereYear('created_at', $date->year)
-                ->count();
 
-            $counts[] = [
-                'month' => $date->format('F Y'),
-                'count' => $count,
-            ];
+    private function getReservationCountsForYearAndLastYear($year)
+    {
+        $counts = [];
+
+        foreach ([$year - 1, $year] as $currentYear) {
+            for ($month = 1; $month <= 12; $month++) {
+                $count = Reservation::where('status', 'checkout')
+                    ->whereYear('checkout_time', $currentYear)
+                    ->whereMonth('checkout_time', $month)
+                    ->count();
+
+                $counts[] = [
+                    'year' => $currentYear,
+                    'month' => Carbon::create($currentYear, $month, 1)->format('F'),
+                    'count' => $count,
+                ];
+            }
         }
+
         return $counts;
     }
 }
