@@ -158,7 +158,7 @@ class DashboardController extends Controller
 
         foreach ([$year - 1, $year] as $currentYear) {
             for ($month = 1; $month <= 12; $month++) {
-                $count = Reservation::where('status', 'checkout')
+                $count = Reservation::where('status', 'check out')
                     ->whereYear('checkout_time', $currentYear)
                     ->whereMonth('checkout_time', $month)
                     ->count();
