@@ -13,7 +13,7 @@
 
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
         <div class="p-5 text-lg font-semibold text-left text-gray-900 bg-gray-100 border-b border-gray-300">
-            Reservation Receipt
+            Reservation Summary
             <p class="mt-1 text-sm font-normal text-gray-500">Details of your reservation are listed below.</p>
         </div>
 

@@ -60,12 +60,13 @@
                     <div class="p-3 rounded-full {{ $overallLossVsIncome < 0 ? 'bg-red-100' : 'bg-green-100' }}">
                         <svg class="w-6 h-6 {{ $overallLossVsIncome < 0 ? 'text-red-600' : 'text-green-600' }}"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            @if ($overallLossVsIncome < 0)
+                            @if ($overallLossVsIncome
+                            < 0)
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                             @else
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             @endif
                         </svg>
                     </div>
@@ -78,15 +79,26 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 ">
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-xl font-semibold text-gray-800">Sales Predictions</h2>
+
+
                 <div class="flex items-center space-x-2">
-                    <span
-                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
                         <span class="mr-1">●</span> Trending Up
                     </span>
                 </div>
+            </div>
+            <div class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                <p class="text-sm text-gray-600">
+                    This chart provides a detailed overview of sales data. It includes:
+                </p>
+                <ul class="list-disc pl-5 text-sm text-gray-600">
+                    <li>The past months' actual sales data, helping you analyze past performance.</li>
+                    <li>A forecast of sales predictions for the next 3 months, offering insights for planning and strategy.</li>
+                </ul>
+
             </div>
             <canvas id="salesPredictionChart" class="w-full h-64"></canvas>
         </div>
@@ -102,18 +114,36 @@
                         </span>
                     </div>
                 </div>
+                <!-- Explanation Section -->
+                <div class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                    <p class="text-sm text-gray-600">
+                        This chart provides a detailed comparison between your Income and Expenses on a monthly basis:
+                    </p>
+                    <ul class="list-disc pl-5 text-sm text-gray-600">
+                        <li>Displays your monthly income, allowing you to track revenue over time.</li>
+                        <li>Shows your monthly expenses, helping you monitor costs and financial management.</li>
+                    </ul>
+
+                </div>
                 <canvas id="lossIncomeGauge" class="w-full h-64"></canvas>
             </div>
             <!-- Reservations Chart -->
             <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 md:col-span-2">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-xl font-semibold text-gray-800">Reservation Trends</h2>
-                    <div class="flex items-center space-x-2">
-                        <span
-                            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-orange-100 text-orange-800">
-                            <span class="mr-1">●</span> Past Months
-                        </span>
-                    </div>
+                </div>
+                <!-- Explanation Section -->
+                <div class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                    <p class="text-sm text-gray-600">
+                        This chart displays the reservation trends, showing:
+                    </p>
+                    <ul class="list-disc pl-5 text-sm text-gray-600">
+                        <li>The reservation count for the previous year, providing a historical perspective of your reservations.</li>
+                        <li>The reservation count for the current year, allowing you to compare it with last year's data to see growth or decline.</li>
+                    </ul>
+                    <p class="text-sm text-gray-600 mt-2">
+                        This chart helps you analyze patterns, seasonality, and forecast future demand based on past trends.
+                    </p>
                 </div>
                 <canvas id="reservationsCountChart" class="w-full h-64"></canvas>
             </div>
@@ -151,14 +181,14 @@
 
                             // Create gradient for distinguishing actual and predicted sales
                             const gradient = ctx.createLinearGradient(0, 0, ctx.canvas.width,
-                            0);
+                                0);
                             const totalDataPoints = combinedSales.length;
                             const actualSalesCount = totalDataPoints -
-                            3; // Last 3 months are for predicted sales
+                                3; // Last 3 months are for predicted sales
 
                             // Blue for actual sales, transitioning to red for predicted sales
                             gradient.addColorStop(0,
-                            'rgba(34, 197, 94, 1)'); // Actual sales color
+                                'rgba(34, 197, 94, 1)'); // Actual sales color
                             gradient.addColorStop(actualSalesCount / totalDataPoints,
                                 'rgba(34, 197, 94, 1)');
                             gradient.addColorStop(actualSalesCount / totalDataPoints,
@@ -186,7 +216,7 @@
                                 label: function(context) {
                                     const sale = combinedSales[context.dataIndex];
                                     const isPredicted = context.dataIndex >= (combinedSales.length -
-                                    3); // Last 3 months are predicted
+                                        3); // Last 3 months are predicted
                                     const type = isPredicted ? 'Predicted Sales' : 'Actual Sales';
                                     return `${type}: ₱${context.raw.toLocaleString()}`;
                                 }
@@ -299,8 +329,7 @@
                         return monthData ? monthData.count :
                             0; // Return count if exists, otherwise 0
                     }),
-                    backgroundColor: year === 2023 ? 'rgba(54, 162, 235, 0.8)' :
-                    'rgba(249, 115, 22, 0.8)', // Different colors for each year
+                    backgroundColor: year === 2023 ? 'rgba(54, 162, 235, 0.8)' : 'rgba(249, 115, 22, 0.8)', // Different colors for each year
                     borderColor: year === 2023 ? 'rgb(54, 162, 235)' : 'rgb(249, 115, 22)',
                     borderWidth: 1,
                     borderRadius: 6,
