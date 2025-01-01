@@ -28,7 +28,7 @@ class DashboardController extends Controller
         $currentYear = date('Y');
 
         // Total revenue for the specified year (show 0 if null)
-        $totalRevenue = Reservation::whereYear('created_at', $totalRevenueYear)
+        $totalRevenue = Reservation::whereYear('checkout_time', $totalRevenueYear)
             ->where('status', 'check out')
             ->sum('total_amount') ?? 0;
 
@@ -43,7 +43,7 @@ class DashboardController extends Controller
         $totalSalaries = Employee::whereYear('payout_date', $totalSalariesYear)
             ->sum('salary') ?? 0;
 
-        $totalCommissions = Reservation::whereYear('check_in', $totalCommissionsYear)
+        $totalCommissions = Reservation::whereYear('check_in', $totalRevenueYear)
             ->sum('commission_amount') ?? 0;
 
         // Predict sales for the next 6 months
