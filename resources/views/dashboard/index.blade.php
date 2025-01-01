@@ -110,7 +110,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 mt-4">
             <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-xl font-semibold text-gray-800">Income vs Expenses</h2>
+                    <h2 class="text-xl font-semibold text-gray-800">Income vs Losses</h2>
                     <div class="flex items-center space-x-2">
                         <span
                             class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
