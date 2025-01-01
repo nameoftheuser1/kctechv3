@@ -50,7 +50,7 @@
                 @foreach ($reservations as $reservation)
                     @if (\Carbon\Carbon::parse($reservation->check_in)->isSameMonth(\Carbon\Carbon::now()))
                         <tr>
-                            <td>{{ $reservation->room->room_number }}</td>
+                            <td>{{ $reservation->rooms->room_number }}</td>
                             <td>{{ $reservation->name }}</td>
                             <td>{{ $reservation->check_in }}</td>
                             <td>{{ $reservation->check_out }}</td>
@@ -73,7 +73,7 @@
                 events: [
                     @foreach ($reservations as $reservation)
                         {
-                            title: 'Room: {{ $reservation->room->room_number }}',
+                            title: 'Room: {{ $reservation->rooms->room_number }}',
                             start: '{{ $reservation->check_in }}',
                             end: '{{ $reservation->check_out }}',
                             description: 'Reservation for {{ $reservation->name }}'
