@@ -49,12 +49,14 @@
             <tbody>
                 @foreach ($reservations as $reservation)
                     @if (\Carbon\Carbon::parse($reservation->check_in)->isSameMonth(\Carbon\Carbon::now()))
-                        <tr>
-                            <td>{{ $reservation->rooms->room_number }}</td>
-                            <td>{{ $reservation->name }}</td>
-                            <td>{{ $reservation->check_in }}</td>
-                            <td>{{ $reservation->check_out }}</td>
-                        </tr>
+                        @foreach ($reservation->rooms as $room)
+                            <tr>
+                                <td>{{ $room->room_number }}</td>
+                                <td>{{ $reservation->name }}</td>
+                                <td>{{ $reservation->check_in }}</td>
+                                <td>{{ $reservation->check_out }}</td>
+                            </tr>
+                        @endforeach
                     @endif
                 @endforeach
             </tbody>
@@ -72,12 +74,14 @@
             $('#calendar').fullCalendar({
                 events: [
                     @foreach ($reservations as $reservation)
-                        {
-                            title: 'Room: {{ $reservation->rooms->room_number }}',
-                            start: '{{ $reservation->check_in }}',
-                            end: '{{ $reservation->check_out }}',
-                            description: 'Reservation for {{ $reservation->name }}'
-                        },
+                        @foreach ($reservation->rooms as $room)
+                            {
+                                title: 'Room: {{ $room->room_number }}',
+                                start: '{{ $reservation->check_in }}',
+                                end: '{{ $reservation->check_out }}',
+                                description: 'Reservation for {{ $reservation->name }}'
+                            },
+                        @endforeach
                     @endforeach
                 ],
                 eventRender: function(event, element) {
