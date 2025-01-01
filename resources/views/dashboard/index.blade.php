@@ -104,17 +104,6 @@
                     </span>
                 </div>
             </div>
-            <div class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                <p class="text-sm text-gray-600">
-                    This chart provides a detailed overview of sales data. It includes:
-                </p>
-                <ul class="list-disc pl-5 text-sm text-gray-600">
-                    <li>The past months' actual sales data, helping you analyze past performance.</li>
-                    <li>A forecast of sales predictions for the next 3 months, offering insights for planning and
-                        strategy.</li>
-                </ul>
-
-            </div>
             <canvas id="salesPredictionChart" class="w-full h-64"></canvas>
         </div>
 
@@ -129,39 +118,12 @@
                         </span>
                     </div>
                 </div>
-                <!-- Explanation Section -->
-                <div class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                    <p class="text-sm text-gray-600">
-                        This chart provides a detailed comparison between your Income and Expenses on a monthly basis:
-                    </p>
-                    <ul class="list-disc pl-5 text-sm text-gray-600">
-                        <li>Displays your monthly income, allowing you to track revenue over time.</li>
-                        <li>Shows your monthly expenses, helping you monitor costs and financial management.</li>
-                    </ul>
-
-                </div>
                 <canvas id="lossIncomeGauge" class="w-full h-64"></canvas>
             </div>
             <!-- Reservations Chart -->
             <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 md:col-span-2">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-xl font-semibold text-gray-800">Reservation Trends</h2>
-                </div>
-                <!-- Explanation Section -->
-                <div class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                    <p class="text-sm text-gray-600">
-                        This chart displays the reservation trends, showing:
-                    </p>
-                    <ul class="list-disc pl-5 text-sm text-gray-600">
-                        <li>The reservation count for the previous year, providing a historical perspective of your
-                            reservations.</li>
-                        <li>The reservation count for the current year, allowing you to compare it with last year's data
-                            to see growth or decline.</li>
-                    </ul>
-                    <p class="text-sm text-gray-600 mt-2">
-                        This chart helps you analyze patterns, seasonality, and forecast future demand based on past
-                        trends.
-                    </p>
                 </div>
                 <canvas id="reservationsCountChart" class="w-full h-64"></canvas>
             </div>
