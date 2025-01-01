@@ -73,7 +73,7 @@
                 events: [
                     @foreach ($reservations as $reservation)
                         {
-                            title: 'Room: {{ $reservation->room->name }}',
+                            title: 'Room: {{ $reservation->room->room_number }}',
                             start: '{{ $reservation->check_in }}',
                             end: '{{ $reservation->check_out }}',
                             description: 'Reservation for {{ $reservation->name }}'
