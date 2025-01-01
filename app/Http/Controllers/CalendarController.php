@@ -9,7 +9,7 @@ class CalendarController extends Controller
 {
     public function index()
     {
-        $reservations = Reservation::with('room')->get();
+        $reservations = Reservation::with('rooms')->get();
         return view('calendar.index', compact('reservations'));
     }
 }
