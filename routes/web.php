@@ -15,6 +15,7 @@ use App\Http\Controllers\RoomGalleryController;
 use App\Http\Controllers\SalesReportController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserReservationController;
+use App\Http\Controllers\CalendarController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'home.index')->name('home');
@@ -50,6 +51,8 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('reservations/{reservation}/reserve', [ReservationStatusController::class, 'reserve'])->name('reservations.reserve');
 
     Route::middleware(['role:admin'])->group(function () {
+
+        Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
 
         Route::get('/notifications/unread-reservations', [NotificationController::class, 'unreadReservationCount'])->name('notifications.unread');
 

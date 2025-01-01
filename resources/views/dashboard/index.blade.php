@@ -4,6 +4,19 @@
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-gray-800">Financial Dashboard</h1>
             <p class="text-gray-600 mt-2">Overview of your business performance</p>
+            <div class="flex justify-end mb-6">
+                <a href="{{ route('settings.edit') }}"
+                    class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg text-sm transition-colors duration-200 ease-in-out">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                        </path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    Adjust Years
+                </a>
+            </div>
         </div>
 
         <!-- Key Metrics Cards -->
@@ -13,7 +26,8 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600">Total Revenue</p>
-                        <h3 class="text-2xl font-bold text-green-600 mt-1">₱{{ number_format($combinedRevenue, 2) }}</h3>
+                        <h3 class="text-2xl font-bold text-green-600 mt-1">₱{{ number_format($combinedRevenue, 2) }}
+                        </h3>
                         <p class="text-sm font-medium text-gray-600">
                             This data covers the period {{ $totalRevenueYear }}.
                         </p>
@@ -60,13 +74,12 @@
                     <div class="p-3 rounded-full {{ $overallLossVsIncome < 0 ? 'bg-red-100' : 'bg-green-100' }}">
                         <svg class="w-6 h-6 {{ $overallLossVsIncome < 0 ? 'text-red-600' : 'text-green-600' }}"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            @if ($overallLossVsIncome
-                            < 0)
+                            @if ($overallLossVsIncome < 0)
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                             @else
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             @endif
                         </svg>
                     </div>
@@ -85,7 +98,8 @@
 
 
                 <div class="flex items-center space-x-2">
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                    <span
+                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
                         <span class="mr-1">●</span> Trending Up
                     </span>
                 </div>
@@ -96,7 +110,8 @@
                 </p>
                 <ul class="list-disc pl-5 text-sm text-gray-600">
                     <li>The past months' actual sales data, helping you analyze past performance.</li>
-                    <li>A forecast of sales predictions for the next 3 months, offering insights for planning and strategy.</li>
+                    <li>A forecast of sales predictions for the next 3 months, offering insights for planning and
+                        strategy.</li>
                 </ul>
 
             </div>
@@ -138,11 +153,14 @@
                         This chart displays the reservation trends, showing:
                     </p>
                     <ul class="list-disc pl-5 text-sm text-gray-600">
-                        <li>The reservation count for the previous year, providing a historical perspective of your reservations.</li>
-                        <li>The reservation count for the current year, allowing you to compare it with last year's data to see growth or decline.</li>
+                        <li>The reservation count for the previous year, providing a historical perspective of your
+                            reservations.</li>
+                        <li>The reservation count for the current year, allowing you to compare it with last year's data
+                            to see growth or decline.</li>
                     </ul>
                     <p class="text-sm text-gray-600 mt-2">
-                        This chart helps you analyze patterns, seasonality, and forecast future demand based on past trends.
+                        This chart helps you analyze patterns, seasonality, and forecast future demand based on past
+                        trends.
                     </p>
                 </div>
                 <canvas id="reservationsCountChart" class="w-full h-64"></canvas>
@@ -329,7 +347,8 @@
                         return monthData ? monthData.count :
                             0; // Return count if exists, otherwise 0
                     }),
-                    backgroundColor: year === 2023 ? 'rgba(54, 162, 235, 0.8)' : 'rgba(249, 115, 22, 0.8)', // Different colors for each year
+                    backgroundColor: year === 2023 ? 'rgba(54, 162, 235, 0.8)' :
+                    'rgba(249, 115, 22, 0.8)', // Different colors for each year
                     borderColor: year === 2023 ? 'rgb(54, 162, 235)' : 'rgb(249, 115, 22)',
                     borderWidth: 1,
                     borderRadius: 6,
