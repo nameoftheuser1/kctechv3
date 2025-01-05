@@ -19,7 +19,6 @@ class DashboardController extends Controller
         // Fetch the total_revenue_date and total_expenses_date from the settings table
         $totalRevenueYear = DB::table('settings')->where('key', 'total_revenue_year')->value('value');
         $totalExpensesYear = DB::table('settings')->where('key', 'total_expenses_year')->value('value');
-        $totalCommissionsYear = DB::table('settings')->where('key', 'total_commissions_year')->value('value') ?? 2024;
         $totalSalariesYear = DB::table('settings')->where('key', 'total_salaries_year')->value('value');
         $predictSalesMonth = DB::table('settings')->where('key', 'predict_sales_month')->value('value');
         $reservationYear = DB::table('settings')->where('key', 'reservation_year')->value('value') ?? 2024;

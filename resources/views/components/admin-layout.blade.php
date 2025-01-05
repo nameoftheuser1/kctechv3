@@ -34,18 +34,19 @@
                     @php
                         $menuItems = [
                             [
-                                'icon' => '
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="m8.99 14.993 6-6m6 3.001c0 1.268-.63 2.39-1.593 3.069a3.746 3.746 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043 3.745 3.745 0 0 1-3.068 1.593c-1.268 0-2.39-.63-3.068-1.593a3.745 3.745 0 0 1-3.296-1.043 3.746 3.746 0 0 1-1.043-3.297 3.746 3.746 0 0 1-1.593-3.068c0-1.268.63-2.39 1.593-3.068a3.746 3.746 0 0 1 1.043-3.297 3.745 3.745 0 0 1 3.296-1.042 3.745 3.745 0 0 1 3.068-1.594c1.268 0 2.39.63 3.068 1.593a3.745 3.745 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.297 3.746 3.746 0 0 1 1.593 3.068ZM9.74 9.743h.008v.007H9.74v-.007Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm4.125 4.5h.008v.008h-.008v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />',
-                                'label' => 'Pending Bookings',
-                                'route' => 'pending.index',
-                                'role' => 'admin',
-                            ],
-                            [
                                 'icon' =>
                                     '<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />',
                                 'label' => 'Dashboard',
                                 'route' => 'dashboard.index',
                                 'role' => 'admin',
+                            ],
+                            [
+                                'icon' => '
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m8.99 14.993 6-6m6 3.001c0 1.268-.63 2.39-1.593 3.069a3.746 3.746 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043 3.745 3.745 0 0 1-3.068 1.593c-1.268 0-2.39-.63-3.068-1.593a3.745 3.745 0 0 1-3.296-1.043 3.746 3.746 0 0 1-1.043-3.297 3.746 3.746 0 0 1-1.593-3.068c0-1.268.63-2.39 1.593-3.068a3.746 3.746 0 0 1 1.043-3.297 3.745 3.745 0 0 1 3.296-1.042 3.745 3.745 0 0 1 3.068-1.594c1.268 0 2.39.63 3.068 1.593a3.745 3.745 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.297 3.746 3.746 0 0 1 1.593 3.068ZM9.74 9.743h.008v.007H9.74v-.007Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm4.125 4.5h.008v.008h-.008v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />',
+                                'label' => 'Pending Bookings',
+                                'route' => 'pending.index',
+                                'role' => 'admin',
+                                'notification' => true,
                             ],
                             [
                                 'icon' =>
@@ -115,7 +116,7 @@
                             {{-- Check if the menu item has a role restriction and if the user has that role --}}
                             @if (!isset($item['role']) || auth()->user()->role === $item['role'])
                                 <li
-                                    class="mb-4 hover:bg-slate-300 rounded-lg p-1 {{ request()->routeIs($item['route']) ? 'bg-gray-300 text-slate-700' : '' }}">
+                                    class="mb-4 hover:bg-slate-300 rounded-lg p-1 relative {{ request()->routeIs($item['route']) ? 'bg-gray-300 text-slate-700' : '' }}">
                                     <a href="{{ route($item['route']) }}"
                                         class="flex items-center space-x-2 text-white">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
@@ -124,10 +125,12 @@
                                         </svg>
                                         <span>{{ $item['label'] }}</span>
                                         {{-- Add this new span for the unread count --}}
-                                        <span id="unread-count"
-                                            class=" bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">
-                                            0
-                                        </span>
+                                        @if (isset($item['notification']))
+                                            <span id="unread-count"
+                                                class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">
+                                                0
+                                            </span>
+                                        @endif
                                     </a>
                                 </li>
                             @endif
