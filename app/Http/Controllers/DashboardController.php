@@ -23,7 +23,6 @@ class DashboardController extends Controller
         $predictSalesMonth = DB::table('settings')->where('key', 'predict_sales_month')->value('value');
         $reservationYear = DB::table('settings')->where('key', 'reservation_year')->value('value') ?? 2024;
 
-
         $currentYear = date('Y');
 
         // Total revenue for the specified year (show 0 if null)

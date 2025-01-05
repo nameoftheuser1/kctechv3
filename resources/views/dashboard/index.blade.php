@@ -299,19 +299,24 @@
                 'October', 'November', 'December'
             ];
 
+            // Define colors for each year
+            const colors = [
+                'rgba(54, 162, 235, 0.8)', // Color for the first year
+                'rgba(249, 115, 22, 0.8)' // Color for the second year
+            ];
+
             // Organize data for each year and month
-            const datasets = years.map(year => {
+            const datasets = years.slice(0, 2).map((year, index) => {
                 return {
                     label: `Reservations in ${year}`,
                     data: months.map(month => {
                         const monthData = reservationCounts.find(item => item.year === year && item
                             .month === month);
                         return monthData ? monthData.count :
-                            0; // Return count if exists, otherwise 0
+                        0; // Return count if exists, otherwise 0
                     }),
-                    backgroundColor: year === 2023 ? 'rgba(54, 162, 235, 0.8)' :
-                    'rgba(249, 115, 22, 0.8)', // Different colors for each year
-                    borderColor: year === 2023 ? 'rgb(54, 162, 235)' : 'rgb(249, 115, 22)',
+                    backgroundColor: colors[index % colors.length], // Cycle through colors
+                    borderColor: colors[index % colors.length].replace('0.8', '1'), // Solid border color
                     borderWidth: 1,
                     borderRadius: 6,
                     barThickness: 20
@@ -323,7 +328,7 @@
                 type: 'bar',
                 data: {
                     labels: months, // Use months as labels
-                    datasets: datasets // Add datasets for both years
+                    datasets: datasets // Add datasets for all years
                 },
                 options: {
                     responsive: true,
