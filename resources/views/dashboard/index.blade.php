@@ -240,7 +240,7 @@
 
             // Enhanced Loss vs Income Gauge
             const gaugeCtx = document.getElementById('lossIncomeGauge').getContext('2d');
-            const totalRevenue = @json($totalRevenue);
+            const combinedRevenue = @json($combinedRevenue);
             const totalExpenses = @json($totalExpenses);
             const totalSalaries = @json($totalSalaries);
             const totalCommissions = @json($totalCommissions); // Add total commissions
@@ -252,7 +252,7 @@
                         'Commissions'
                     ], // Add 'Commissions' label
                     datasets: [{
-                        data: [totalRevenue, totalExpenses, totalSalaries,
+                        data: [combinedRevenue, totalExpenses, totalSalaries,
                             totalCommissions
                         ], // Add totalCommissions to data
                         backgroundColor: [
@@ -313,7 +313,7 @@
                         const monthData = reservationCounts.find(item => item.year === year && item
                             .month === month);
                         return monthData ? monthData.count :
-                        0; // Return count if exists, otherwise 0
+                            0; // Return count if exists, otherwise 0
                     }),
                     backgroundColor: colors[index % colors.length], // Cycle through colors
                     borderColor: colors[index % colors.length].replace('0.8', '1'), // Solid border color
